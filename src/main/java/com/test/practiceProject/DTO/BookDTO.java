@@ -1,5 +1,6 @@
 package com.test.practiceProject.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.test.practiceProject.config.type.BookType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -18,10 +19,11 @@ public class BookDTO {
     @Enumerated(EnumType.STRING)
     private BookType bookType;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+//    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime created_date;
 
-    @LastModifiedDate
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
+//    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDateTime last_modified_date;
 }

@@ -11,6 +11,7 @@ import com.test.practiceProject.Utils.CommonUtils;
 import com.test.practiceProject.config.type.BookType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -145,7 +146,7 @@ public class BookService {
         }
     }
 
-    public BookEntity partialUpdateBook(Map<String, Object> fields, int bookId) {
+    public BookDTO partialUpdateBook(Map<String, Object> fields, int bookId) {
         Optional<BookEntity> existingBook = bookRepository.findById(bookId);
         if (existingBook.isEmpty()) {
             HttpStatus status = HttpStatus.NOT_FOUND;
@@ -167,6 +168,10 @@ public class BookService {
             }
         });
 
-        return bookRepository.save(book);
+        BookEntity updatedBookEntity = bookRepository.save(book);
+        BookDTO bookDTO = new BookDTO();
+        BeanUtils.copyProperties(updatedBookEntity, bookDTO);
+
+        return bookDTO;
     }
 }
