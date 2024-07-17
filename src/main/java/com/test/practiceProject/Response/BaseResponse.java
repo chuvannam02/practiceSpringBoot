@@ -27,8 +27,10 @@ public class BaseResponse {
         this.message = "SUCCESS";
     }
 
-    public <T> void setAdditionalProperties(T properties) {
+    public <T> void setObject(T properties) {
         this.object = properties;
     }
-    public <T> void setAdditionalProperties(PageResponse<T> page) { this.object = page; }
+    public <T> void setPageResponseObject(PageResponse<T> page) {
+        this.object = page;
+    }
 }

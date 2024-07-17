@@ -38,7 +38,7 @@ public class LoginController {
         authenticateResponse.setExp(expTime);
         authenticateResponse.setAccess_token(jwtToken);
         baseResponse.setError_code("0");
-        baseResponse.setAdditionalProperties(authenticateResponse);
+        baseResponse.setObject(authenticateResponse);
 
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }

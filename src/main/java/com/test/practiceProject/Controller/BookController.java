@@ -41,7 +41,7 @@ public class BookController {
     @GetMapping("/get-by-id/{id}")
     public ResponseEntity<BaseResponse> findById(@PathVariable Integer id) {
         BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setAdditionalProperties(bookService.findById(id));
+        baseResponse.setObject(bookService.findById(id));
 
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
@@ -49,7 +49,7 @@ public class BookController {
     @GetMapping("/get-all")
     public ResponseEntity<BaseResponse> getAll() {
         BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setAdditionalProperties(bookService.getAll());
+        baseResponse.setObject(bookService.getAll());
 
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
@@ -58,7 +58,7 @@ public class BookController {
     public ResponseEntity<BaseResponse> testVariableArguments() {
         BaseResponse baseResponse = new BaseResponse();
         bookService.testVariableArguments("Chu", "Van", "Nam");
-        baseResponse.setAdditionalProperties(null);
+        baseResponse.setPageResponseObject(null);
 
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
@@ -72,7 +72,7 @@ public class BookController {
             @RequestParam(name = "direction", defaultValue = "DESC", required = false) String direction
     ) {
         BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setAdditionalProperties(bookService.list(keyword, pageNum, pageSize, sort, direction));
+        baseResponse.setPageResponseObject(bookService.list(keyword, pageNum, pageSize, sort, direction));
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
 
@@ -89,7 +89,7 @@ public class BookController {
     public ResponseEntity<BaseResponse> updatePartial(@PathVariable Integer id,@RequestBody Map<String, Object> fields) {
         BaseResponse baseResponse = new BaseResponse();
         System.out.println(fields);
-        baseResponse.setAdditionalProperties(bookService.partialUpdateBook(fields, id));
+        baseResponse.setObject(bookService.partialUpdateBook(fields, id));
         
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
