@@ -1,14 +1,20 @@
 package com.test.practiceProject.Service;
 
 import com.test.practiceProject.Entity.AppParams;
+import com.test.practiceProject.Entity.LoginEntity;
+import com.test.practiceProject.Error.BadRequestException;
 import com.test.practiceProject.Repository.AppParamsRepository;
+import com.test.practiceProject.Request.AppParamsRequest;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class AppParamsService {
     private final AppParamsRepository appParamsRepository;
 
@@ -29,5 +35,24 @@ public class AppParamsService {
     }
     public List<AppParams> getAll() {
         return appParamsRepository.findAll();
+    }
+
+    public AppParams createNew(AppParamsRequest app) {
+        AppParams existed = checkIsExistedParamName(app.getParamName());
+        log.info(String.valueOf(existed));
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        if (existed != null) throw new BadRequestException("Tên tham số đã tồn tại!",status);
+
+        // Builder Pattern
+        AppParams newParam = AppParams.builder()
+                .paramName(app.getParamName())
+                .paramValue(app.getParamValue())
+                .build();
+
+        return appParamsRepository.save(newParam);
+    }
+
+    private AppParams checkIsExistedParamName(String paramName) {
+        return appParamsRepository.findByParamName(paramName).orElse(null);
     }
 }
