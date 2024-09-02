@@ -1,7 +1,6 @@
 package com.test.practiceProject.Controller;
 
 import com.test.practiceProject.DTO.BookDTO;
-import com.test.practiceProject.Entity.BookEntity;
 import com.test.practiceProject.Response.BaseResponse;
 import com.test.practiceProject.Service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;

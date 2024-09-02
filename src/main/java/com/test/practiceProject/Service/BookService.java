@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.practiceProject.DTO.BookDTO;
 import com.test.practiceProject.Entity.BookEntity;
 import com.test.practiceProject.Error.BadRequestException;
-import com.test.practiceProject.Error.ErrorCustom;
 import com.test.practiceProject.Repository.BookRepository;
 import com.test.practiceProject.Response.PageResponse;
 import com.test.practiceProject.Utils.CommonUtils;
@@ -17,15 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.util.ReflectionUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Book;
 import java.lang.reflect.Field;
 import java.util.*;
 
