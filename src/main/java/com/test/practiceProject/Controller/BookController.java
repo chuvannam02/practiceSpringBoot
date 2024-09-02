@@ -108,6 +108,14 @@ public class BookController {
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/get-by-name-and-type")
+    public ResponseEntity<BaseResponse> test() {
+        BaseResponse baseResponse = new BaseResponse();
+        System.out.println("Test");
+        bookService.varargsExample("Chu", "Van", "Nam");
+        return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
+    }
+
     private <T> void addIfValid(Map<String, Object> map, String key, T value, Predicate<T> isValid) {
         if (value != null && isValid.test(value)) {
             map.put(key, value);
