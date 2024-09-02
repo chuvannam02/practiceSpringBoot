@@ -56,4 +56,13 @@ public class LoginController {
 
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<BaseResponse> logout() {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setError_code("0");
+        baseResponse.setMessage("Logout success!");
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
 }

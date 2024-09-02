@@ -20,7 +20,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.print.Book;
 import java.lang.reflect.Field;
@@ -34,7 +37,8 @@ public class BookService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public void save(BookEntity book) {
+    @Transactional
+    public void save(BookDTO book) {
         bookRepository.findById(book.getBookId()).ifPresentOrElse(
                 existingBook -> {
                     update(book);
@@ -45,36 +49,33 @@ public class BookService {
         );
     }
 
-    private BookEntity checkExisted(BookEntity book) {
+    private void checkExisted(BookDTO book) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         if (book.getName().isBlank()) throw new BadRequestException("exception.internalServerError", status);
-        if (bookRepository.checkNameIsDuplicate(book.getName()) > 0) {
+        if (book.getBookId() == 0 && bookRepository.checkNameIsDuplicate(book.getName()) > 0) {
             Map<String, String> additionalInfo = new HashMap<>();
             additionalInfo.put("field", "Tên sách");
-            throw new BadRequestException("existed", status, additionalInfo);
+            throw new BadRequestException("Tên sách đã tồn tại!", status, additionalInfo);
         }
-        return book;
     }
 
-    private void create(BookEntity book) {
-        book.setBookType(BookType.SHORT_STORIES);
-        bookRepository.save(checkExisted(book));
+    private void create(BookDTO book) {
+        // Shift + Alt + Arrow Up/Down -> Move line up/down
+        checkExisted(book);
+        // Convert DTO to Entity and save
+        BookEntity data = objectMapper.convertValue(book, BookEntity.class);
+        data.setBookType(getBookType(book.getBookType()));
+        bookRepository.save(data);
     }
 
-    public void update(BookEntity book) {
-        Optional<BookEntity> idOfBook = bookRepository.findById(book.getBookId());
-        BookEntity b = checkExisted(book);
-        if (idOfBook.isPresent()) {
-            BookEntity m = idOfBook.get();
-            m.setName(b.getName());
-            m.setDescription(b.getDescription());
-            m.setCopies(b.getCopies());
-            m.setBookType(BookType.FICTION);
-            bookRepository.save(m);
-        } else {
-            HttpStatus status = HttpStatus.NOT_FOUND;
-            throw new BadRequestException("Không tìm thấy thông tin cuốn sách!", status);
-        }
+    public void update(BookDTO book) {
+        BookEntity existedBook = bookRepository.findById(book.getBookId()).orElseThrow(() -> new BadRequestException("Không tìm thấy thông tin cuốn sách!", HttpStatus.NOT_FOUND));
+        checkExisted(book);
+        existedBook.setName(book.getName());
+        existedBook.setDescription(book.getDescription());
+        existedBook.setCopies(book.getCopies());
+        existedBook.setBookType(getBookType(book.getBookType()));
+        bookRepository.save(existedBook);
     }
 
     public BookDTO findById(Integer id) {
@@ -90,7 +91,6 @@ public class BookService {
 
     public List<BookDTO> getAll() {
         List<BookEntity> books = bookRepository.findAll();
-        System.out.println(books);
         List<BookDTO> bookDTOs = new ArrayList<>();
         for (BookEntity book : books) {
             bookDTOs.add(objectMapper.convertValue(book, BookDTO.class));
@@ -135,6 +135,7 @@ public class BookService {
         return PageResponse.fromList(list);
     }
 
+    @Transactional
     public boolean delete(Integer id) {
         boolean existed = bookRepository.existsById(id);
         if (!existed) {
@@ -146,7 +147,13 @@ public class BookService {
         }
     }
 
+    @Transactional
     public BookDTO partialUpdateBook(Map<String, Object> fields, int bookId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new BadRequestException("Không tìm thấy thông tin người dùng", HttpStatus.UNAUTHORIZED);
+        }
+        log.info("User: {}", authentication.getName());
         Optional<BookEntity> existingBook = bookRepository.findById(bookId);
         if (existingBook.isEmpty()) {
             HttpStatus status = HttpStatus.NOT_FOUND;
@@ -155,12 +162,13 @@ public class BookService {
 
         BookEntity book = existingBook.get();
         fields.forEach((key, value) -> {
+            System.out.println(key + " " + value);
             Field field = null;
             try {
                 field = BookEntity.class.getDeclaredField(key);
                 field.setAccessible(true);
                 if (key.equals("bookType")) {
-                    value = BookType.valueOf((String) value);
+                    value = getBookType((int) value);
                 }
                 field.set(book, value);
             } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -173,5 +181,14 @@ public class BookService {
         BeanUtils.copyProperties(updatedBookEntity, bookDTO);
 
         return bookDTO;
+    }
+
+    private BookType getBookType(int bookType) {
+        return switch(bookType) {
+            case 1 -> BookType.FICTION;
+            case 2 -> BookType.SHORT_STORIES;
+            case 3 -> BookType.HISTORY;
+            default -> BookType.MYSTERY;
+        };
     }
 }

@@ -4,4 +4,6 @@ public class CommonUtils {
     public static String trimNullUpper(String k) {
         return StringUtils.upperCase(StringUtils.trimToNull(k));
     }
+
+
 }

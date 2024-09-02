@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serial;
 import java.io.Serializable;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @AllArgsConstructor
@@ -16,6 +18,7 @@ import java.io.Serializable;
 @Table(name = "books")
 @EntityListeners(AuditingEntityListener.class)
 public class BookEntity extends BaseEntity implements Serializable {
+    @Serial
     private static final long serialVersionUID = -2936687026040726549L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +26,9 @@ public class BookEntity extends BaseEntity implements Serializable {
     private String name;
     private String description;
     private transient int copies;
+
+    // Trạng thái sách:  - 0: Đang được mượn - 1: Có thể mượn
+    private int status;
 
     @Enumerated(EnumType.STRING)
     private BookType bookType;

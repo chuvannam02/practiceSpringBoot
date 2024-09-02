@@ -28,6 +28,7 @@ public class LoginEntity {
 
     @JsonIgnore
     @NotNull
+    @PasswordConstrain
     String password;
 
     Integer numberFailures;

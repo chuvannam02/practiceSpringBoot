@@ -1,5 +1,6 @@
 package com.test.practiceProject.Error;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
@@ -43,6 +44,16 @@ public class ErrorCustom {
         HttpStatus status = ex.getHttpStatus();
         ApiResponse apiResponse = new ApiResponse(status.toString(), newMessage, additionalInfo);
         return ResponseEntity.status(status).body(apiResponse);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ApiResponse> handleConstraintViolationException(ConstraintViolationException ex) {
+        String message = ex.getConstraintViolations().stream().collect(StringBuilder::new, (sb, v) -> sb.append(v.getMessage()).append("\n"), StringBuilder::append).toString();
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return ResponseEntity
+                .status(status)
+                .body(new ApiResponse(status.toString(), message));
     }
 
     private String getLocalizedMessage(String translationKey)

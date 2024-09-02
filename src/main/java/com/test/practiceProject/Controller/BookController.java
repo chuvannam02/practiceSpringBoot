@@ -1,5 +1,6 @@
 package com.test.practiceProject.Controller;
 
+import com.test.practiceProject.DTO.BookDTO;
 import com.test.practiceProject.Entity.BookEntity;
 import com.test.practiceProject.Response.BaseResponse;
 import com.test.practiceProject.Service.BookService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 @RestController
 @RequestMapping("/v1/book")
@@ -20,7 +22,7 @@ public class BookController {
     @Autowired
     BookService bookService;
     @PostMapping("/save")
-    public ResponseEntity<BaseResponse> save(@RequestBody BookEntity book) {
+    public ResponseEntity<BaseResponse> save(@RequestBody BookDTO book) {
         BaseResponse baseResponse = new BaseResponse();
         bookService.save(book);
 
@@ -28,10 +30,10 @@ public class BookController {
     }
 
     @PostMapping("/many-save")
-    public ResponseEntity<BaseResponse> saveMany(@RequestBody List<BookEntity> books) {
+    public ResponseEntity<BaseResponse> saveMany(@RequestBody List<BookDTO> books) {
         BaseResponse baseResponse = new BaseResponse();
         // for-each loop in Java 8
-        for (BookEntity book : books) {
+        for (BookDTO book : books) {
             bookService.save(book);
         }
 
@@ -86,11 +88,23 @@ public class BookController {
     }
 
     @PatchMapping("/update-book/{id}")
-    public ResponseEntity<BaseResponse> updatePartial(@PathVariable Integer id,@RequestBody Map<String, Object> fields) {
+    public ResponseEntity<BaseResponse> updatePartial(@PathVariable Integer id,@RequestBody BookDTO book) {
         BaseResponse baseResponse = new BaseResponse();
-        System.out.println(fields);
-        baseResponse.setObject(bookService.partialUpdateBook(fields, id));
-        
+        Map<String, Object> data = new HashMap<>();
+        addIfValid(data, "name", book.getName(), value -> !value.isBlank());
+        addIfValid(data, "description", book.getDescription(), value -> !value.isBlank());
+        addIfValid(data, "copies", book.getCopies(), value -> value > 0);
+        addIfValid(data, "bookType", book.getBookType(), value -> value > 0);
+        // Ctrl + D: Duplicate line below
+        addIfValid(data, "status", book.getStatus(), value -> value > 0);
+        baseResponse.setObject(bookService.partialUpdateBook(data, id));
+
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
+    }
+
+    private <T> void addIfValid(Map<String, Object> map, String key, T value, Predicate<T> isValid) {
+        if (value != null && isValid.test(value)) {
+            map.put(key, value);
+        }
     }
 }

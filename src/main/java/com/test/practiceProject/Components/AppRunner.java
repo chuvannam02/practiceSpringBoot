@@ -2,11 +2,12 @@ package com.test.practiceProject.Components;
 
 import com.test.practiceProject.Response.UserGithub;
 import com.test.practiceProject.Service.GithubLookupService;
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
 import java.util.concurrent.CompletableFuture;
 
 @Component
@@ -38,5 +39,21 @@ public class AppRunner implements CommandLineRunner {
         logger.info("--> " + page2.get());
         logger.info("--> " + page3.get());
 
+
+        // storing multiple values associate with a single key
+        // provide multiple implementations of MultiValuedMap interface
+        MultiValuedMap<String, String> multiValuedMap = new ArrayListValuedHashMap<>();
+
+        // Adding values
+        multiValuedMap.put("fruit", "apple");
+        multiValuedMap.put("fruit", "banana");
+        multiValuedMap.put("fruit", "orange");
+
+        // Retrieving values
+        System.out.println("Fruit values: " + multiValuedMap.get("fruit"));
+
+        // Iterating through the map
+        multiValuedMap.entries().forEach(entry ->
+                System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue()));
     }
 }

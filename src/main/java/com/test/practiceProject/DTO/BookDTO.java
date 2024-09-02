@@ -16,14 +16,7 @@ public class BookDTO {
     private String name;
     private String description;
     private int copies;
-    @Enumerated(EnumType.STRING)
-    private BookType bookType;
 
-//    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime created_date;
-
-    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
-//    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDateTime last_modified_date;
+    private int bookType;
+    private int status;
 }
