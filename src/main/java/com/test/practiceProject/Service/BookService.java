@@ -94,6 +94,15 @@ public class BookService {
         return bookDTOs;
     }
 
+    public List<String> testVariableArgumentsWithoutAnnotation(String... args) {
+        List<String> ls = new ArrayList<>();
+        for (String arg : args) {
+            log.info(arg);
+            ls.add(arg);
+        }
+        return ls;
+    }
+
     public void testVariableArguments(String... args) {
         //varargs (variable arguments) cho phép một phương thức nhận một số lượng tham số không xác định thuộc 1 kiểu dữ liệu cụ thể
         // Ví dụ String... args thực chất là một mảng String []args nhưng cho phép truyền nhiều tham số riêng lẻ khi gọi phương thức, thay vì phải tạo một mảng thủ công

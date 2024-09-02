@@ -54,16 +54,15 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource())); // Enable CORS support
-        http.csrf().disable(); // Disable CSRF protection for simplicity
-                http.authorizeHttpRequests(authorizeRequests -> {
-                    authorizeRequests
-                            .requestMatchers(AUTH_WHITELIST).permitAll() // Allow creating user accounts and login without authentication
-                            .anyRequest().authenticated()
-                            .and()
-                            .authenticationProvider(authenticationProvider())
-                            .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);// Require authentication for other requests
-                });
+        http.cors().and()
+                .csrf().disable() // Disable CSRF protection for simplicity
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers(AUTH_WHITELIST).permitAll() // Whitelist requests
+                        .anyRequest().authenticated() // Require authentication for other requests
+                )
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class) // Add custom filter
+                .authenticationProvider(authenticationProvider()); // Add custom authentication provider
+
         return http.build();
     }
 

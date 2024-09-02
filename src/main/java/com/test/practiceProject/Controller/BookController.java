@@ -58,8 +58,7 @@ public class BookController {
     @GetMapping("/test-varargs")
     public ResponseEntity<BaseResponse> testVariableArguments() {
         BaseResponse baseResponse = new BaseResponse();
-        bookService.testVariableArguments("Chu", "Van", "Nam");
-        baseResponse.setPageResponseObject(null);
+        baseResponse.setObject(bookService.testVariableArgumentsWithoutAnnotation("Chu", "Van", "Nam"));
 
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
