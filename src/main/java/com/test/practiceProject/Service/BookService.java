@@ -143,6 +143,12 @@ public class BookService {
         }
     }
 
+    public void varargsExample(String... args) {
+        for (String arg : args) {
+            log.info(arg);
+        }
+    }
+
     @Transactional
     public BookDTO partialUpdateBook(Map<String, Object> fields, int bookId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
