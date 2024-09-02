@@ -101,6 +101,13 @@ public class BookController {
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/get-by-name/{name}")
+    public ResponseEntity<BaseResponse> findByName(@PathVariable String name) {
+        BaseResponse baseResponse = new BaseResponse();
+        System.out.println("Name: " + name);
+        return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
+    }
+
     private <T> void addIfValid(Map<String, Object> map, String key, T value, Predicate<T> isValid) {
         if (value != null && isValid.test(value)) {
             map.put(key, value);
