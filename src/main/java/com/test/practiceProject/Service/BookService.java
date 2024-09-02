@@ -28,6 +28,10 @@ import java.util.*;
 @Service
 public class BookService {
     private final static Logger log = LoggerFactory.getLogger(BookService.class);
+    private final Map<String, String> doubleBraceMap  = new HashMap<String, String>() {{
+        put("key1", "value1");
+        put("key2", "value2");
+    }};
     @Autowired
     BookRepository bookRepository;
     @Autowired
@@ -95,11 +99,18 @@ public class BookService {
     }
 
     public List<String> testVariableArgumentsWithoutAnnotation(String... args) {
+        doubleBraceMap.forEach((key, value) -> {
+            log.info(key + " " + value);
+        });
         List<String> ls = new ArrayList<>();
         for (String arg : args) {
             log.info(arg);
+            doubleBraceMap.put(arg, arg);
             ls.add(arg);
         }
+        doubleBraceMap.forEach((key, value) -> {
+            log.info(key + " " + value);
+        });
         return ls;
     }
 
