@@ -101,6 +101,15 @@ public class BookController {
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/get-by-name/{name1}")
+    public ResponseEntity<BaseResponse> getByName(@PathVariable String name1) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setMessage("Tìm kiếm sách theo tên");
+        baseResponse.setError_code("0");
+
+        return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
+    }
+
     private <T> void addIfValid(Map<String, Object> map, String key, T value, Predicate<T> isValid) {
         if (value != null && isValid.test(value)) {
             map.put(key, value);
