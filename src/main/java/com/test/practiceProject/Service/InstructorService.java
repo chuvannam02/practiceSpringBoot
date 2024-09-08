@@ -9,6 +9,7 @@ import com.test.practiceProject.Repository.InstructorRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -42,7 +43,8 @@ public class InstructorService {
 
     public void updateInstructor(InstructorDTO instructorDTO) {
         InstructorEntity instructor = instructorRepository.findById(instructorDTO.getId()).orElse(null);
-        if (instructor == null) throw new BadRequestException("exception.notFound");
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        if (instructor != null) throw new BadRequestException("Không tìm thấy thông tin người hướng dẫn!", status);
     }
 
     public InstructorEntity getInstructorById(int id) {
@@ -50,7 +52,8 @@ public class InstructorService {
         if (instructor.isPresent()) {
             return instructor.get();
         } else {
-            throw new BadRequestException("exception.notFound");
+            HttpStatus status = HttpStatus.NOT_FOUND;
+            throw new BadRequestException("Không tìm thấy thông tin hướng dẫn!", status);
         }
     }
 
