@@ -1,5 +1,6 @@
 package com.test.practiceProject.Error;
 
+import com.test.practiceProject.Response.BaseResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -10,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
+import java.nio.file.AccessDeniedException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Locale;
 import java.util.Map;
@@ -22,8 +25,7 @@ public class ErrorCustom {
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<ApiResponse> exception(Exception ex)
-    {
+    public ResponseEntity<ApiResponse> exception(Exception ex) {
         String message = getLocalizedMessage("exception.internalServerError");
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         return ResponseEntity
@@ -40,7 +42,7 @@ public class ErrorCustom {
                 ? getLocalizedMessage(messageKey)
                 : getLocalizedMessage(messageKey, new Object[]{additionalInfo});
 
-        String newMessage = checkExistedTranslationKey(messageKey, new Object[]{additionalInfo})  ? message : messageKey;
+        String newMessage = checkExistedTranslationKey(messageKey, new Object[]{additionalInfo}) ? message : messageKey;
         HttpStatus status = ex.getHttpStatus();
         ApiResponse apiResponse = new ApiResponse(status.toString(), newMessage, additionalInfo);
         return ResponseEntity.status(status).body(apiResponse);
@@ -51,19 +53,38 @@ public class ErrorCustom {
     public ResponseEntity<ApiResponse> handleConstraintViolationException(ConstraintViolationException ex) {
         String message = ex.getConstraintViolations().stream().collect(StringBuilder::new, (sb, v) -> sb.append(v.getMessage()).append("\n"), StringBuilder::append).toString();
         HttpStatus status = HttpStatus.BAD_REQUEST;
+
         return ResponseEntity
                 .status(status)
                 .body(new ApiResponse(status.toString(), message));
     }
 
-    private String getLocalizedMessage(String translationKey)
-    {
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<BaseResponse> handleNotFound(NoHandlerFoundException ex) {
+        String message = getLocalizedMessage("exception.urlNotFound");
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setMessage(message);
+        baseResponse.setError_code(status.toString());
+        return new ResponseEntity<>(baseResponse, status);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<BaseResponse> handleAccessDenied(AccessDeniedException ex) {
+        BaseResponse base = new BaseResponse();
+        base.setError_code(HttpStatus.FORBIDDEN.toString());
+        base.setMessage(getLocalizedMessage("exception.accessDenied"));
+        return new ResponseEntity<>(base, HttpStatus.FORBIDDEN);
+    }
+
+    private String getLocalizedMessage(String translationKey) {
         Locale locale = LocaleContextHolder.getLocale();
         return messageSource.getMessage(translationKey, null, locale);
     }
 
-    private String getLocalizedMessage(String translationKey, Object[] args)
-    {
+    private String getLocalizedMessage(String translationKey, Object[] args) {
         Locale locale = LocaleContextHolder.getLocale();
         return messageSource.getMessage(translationKey, args, locale);
     }

@@ -5,6 +5,10 @@ import com.test.practiceProject.Entity.LoginEntity;
 import com.test.practiceProject.Error.BadRequestException;
 import com.test.practiceProject.Repository.AccountRepository;
 import com.test.practiceProject.config.auth.CustomUserDetails;
+import com.test.practiceProject.config.auth.JwtTokenProvider;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.JwtHandler;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -105,11 +111,17 @@ public class AccountService implements UserDetailsService {
         return new UsernamePasswordAuthenticationToken(username, null, grantedAuths);
     }
 
-    public void logout() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            new SecurityContextLogoutHandler().logout(null, null, authentication);
-        }
+    public void logout(HttpServletRequest request) {
+       String token = JwtTokenProvider.getTokenFromRequest(request);
+       if (token != null) {
+           String username = JwtTokenProvider.extractUsername(token);
+           if (Objects.equals(username, SecurityContextHolder.getContext().getAuthentication().getName())) {
+
+           }
+       }
+    }
+
+    public void deleteUser() {
 
     }
 }

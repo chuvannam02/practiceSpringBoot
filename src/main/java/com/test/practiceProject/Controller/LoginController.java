@@ -6,6 +6,7 @@ import com.test.practiceProject.Response.AuthenticateResponse;
 import com.test.practiceProject.Response.BaseResponse;
 import com.test.practiceProject.Service.AccountService;
 import com.test.practiceProject.config.auth.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,8 +59,9 @@ public class LoginController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<BaseResponse> logout() {
+    public ResponseEntity<BaseResponse> logout(HttpServletRequest req) {
         BaseResponse baseResponse = new BaseResponse();
+        accountService.logout(req);
         baseResponse.setError_code("0");
         baseResponse.setMessage("Logout success!");
 

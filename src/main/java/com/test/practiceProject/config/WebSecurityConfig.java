@@ -3,6 +3,7 @@ package com.test.practiceProject.config;
 import com.test.practiceProject.config.auth.AuditorAwareImpl;
 import com.test.practiceProject.config.auth.JwtAuthenticationFilter;
 import com.test.practiceProject.config.auth.UserInfoUserDetailsService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -61,6 +62,12 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated() // Require authentication for other requests
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class) // Add custom filter
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint((request, response, exception) -> {
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN, exception.getMessage());
+                            response.getWriter().write("Access Denied!");
+                        })
+                )
                 .authenticationProvider(authenticationProvider()); // Add custom authentication provider
 
         return http.build();

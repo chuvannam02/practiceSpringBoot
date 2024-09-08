@@ -18,6 +18,7 @@ public class PasswordValidator implements ConstraintValidator<PasswordConstrain,
         }
 
         int length = password.length();
+        System.out.println(length);
         if (length < 8 || length > 14) {
             context.buildConstraintViolationWithTemplate("Mật khẩu phải có độ dài từ 8 đến 14 ký tự.")
                     .addConstraintViolation()

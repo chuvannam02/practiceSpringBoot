@@ -100,6 +100,19 @@ public class PracticeProjectApplication {
 //		};
 //	}
 
+
+	// CommandLineRunner is from Spring Boot framework
+	// Executed after the Spring Beans have been loaded and the application context has been created.
+	@Bean
+	public CommandLineRunner commandLineRunner(String[] args) {
+		// Lambda expression
+		// This is a functional interface which has a method run
+		// This method will be called when the application is started
+		return runner -> {
+			System.out.println("Hello Spring Boot 2.4.2");
+		};
+	}
+
 	@Bean
 	public Executor taskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

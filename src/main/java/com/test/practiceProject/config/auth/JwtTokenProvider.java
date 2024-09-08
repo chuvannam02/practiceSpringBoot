@@ -3,9 +3,11 @@ package com.test.practiceProject.config.auth;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Date;
@@ -17,13 +19,18 @@ import java.util.function.Function;
 @Slf4j
 public class JwtTokenProvider {
     // Đoạn JWT_SECRET này là bí mật, chỉ có phía server biết
-    private final String JWT_SECRET = "67566B59703573367639792F423F4528482B4D6251655468576D5A712904200112312312321";
+    private static final String JWT_SECRET = "67566B59703573367639792F423F4528482B4D6251655468576D5A712904200112312312321";
 
     //Thời gian có hiệu lực của chuỗi jwt
     private final long JWT_EXPIRATION = 604800000L;
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    public static String extractUsername(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64.decode(JWT_SECRET)))
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     public Date extractExpiration(String token) {
@@ -72,5 +79,12 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    public static String getTokenFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
     // Lấy thông tin user từ jwt
 }
