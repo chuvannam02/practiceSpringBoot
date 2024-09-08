@@ -6,16 +6,19 @@ import com.test.practiceProject.Entity.InstructorEntity;
 import com.test.practiceProject.Error.BadRequestException;
 import com.test.practiceProject.Repository.InstructorDetailRepository;
 import com.test.practiceProject.Repository.InstructorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-@Service
-public class InstructorService {
-    @Autowired
-    private InstructorRepository instructorRepository;
+import java.util.Optional;
 
-    @Autowired
-    private InstructorDetailRepository instructorDetailRepository;
+@Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class InstructorService {
+    InstructorRepository instructorRepository;
+    InstructorDetailRepository instructorDetailRepository;
 
     public void createNewInstructor(InstructorDTO instructorDTO) {
         // create a new instructor detail
@@ -39,11 +42,16 @@ public class InstructorService {
 
     public void updateInstructor(InstructorDTO instructorDTO) {
         InstructorEntity instructor = instructorRepository.findById(instructorDTO.getId()).orElse(null);
-        if (instructor == null) throw new BadRequestException("Instructor not found!");
+        if (instructor == null) throw new BadRequestException("exception.notFound");
     }
 
     public InstructorEntity getInstructorById(int id) {
-        return instructorRepository.findById(id).orElse(null);
+        Optional<InstructorEntity> instructor = instructorRepository.searchById(id);
+        if (instructor.isPresent()) {
+            return instructor.get();
+        } else {
+            throw new BadRequestException("exception.notFound");
+        }
     }
 
     public void deleteInstructorById(int id) {

@@ -3,6 +3,7 @@ package com.test.practiceProject.Entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,6 +20,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "app_params")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 // Bạn phải đánh dấu class bởi @EntityListeners(AuditingEntityListener.class)
 // Đây là Một đối tượng Listener, lắng nghe sự kiện insert hoặc update của đối tượng
 // Để từ đó tự động cập nhật các trường @CreatedDate và @LastModifiedDate
@@ -31,9 +33,9 @@ public class AppParams implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
-    private String paramName;
-    private String paramValue;
+    Long id;
+    String paramName;
+    String paramValue;
 
     /*
     đánh dấu trường Date với @CreatedDate
@@ -41,7 +43,7 @@ public class AppParams implements Serializable {
      */
     @CreatedDate
     @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
 
     /*
     đánh dấu trường Date với @LastModifiedDate
@@ -50,5 +52,5 @@ public class AppParams implements Serializable {
      */
     @JsonFormat(pattern="dd-MM-yyy HH:mm:ss")
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    LocalDateTime updatedAt;
 }

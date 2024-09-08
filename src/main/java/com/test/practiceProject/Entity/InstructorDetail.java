@@ -2,6 +2,7 @@ package com.test.practiceProject.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
@@ -9,6 +10,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "`instructor_detail`")
 public class InstructorDetail {
     // annotate the class as an entity and map to db table
@@ -21,11 +23,11 @@ public class InstructorDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     // map the field to db column
     @Column(name = "id")
-    private int id;
+    int id;
     @Column(name = "youtube_channel")
-    private String youtubeChannel;
+    String youtubeChannel;
     @Column(name = "hobby")
-    private String hobby;
+    String hobby;
 
     @Override
     public String toString() {

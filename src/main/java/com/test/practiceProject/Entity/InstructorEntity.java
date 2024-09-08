@@ -2,6 +2,7 @@ package com.test.practiceProject.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "`instructor`")
@@ -10,22 +11,23 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class InstructorEntity {
     // annotate the class as an entity and map to db table
     // define the fields
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    int id;
 
     @Column(name="first_name")
-    private String firstName;
+    String firstName;
 
     @Column(name="last_name")
-    private String lastName;
+    String lastName;
 
     @Column(name="email")
-    private String email;
+    String email;
 
     // Instructor-InstructorDetail One-To-One Unidirectional Relationship Mapping
 
@@ -37,7 +39,7 @@ public class InstructorEntity {
     // With FetchType.LAZY and @ToString(exclude = "instructor_detail_id") at the entity Class level,
     // it will fetch the details of the Parent only i.e. instructor details will not be fetched in a single query.
     @JoinColumn(name = "instructor_detail_id")
-    private InstructorDetail instructorDetail;
+    InstructorDetail instructorDetail;
 
     @Override
     public String toString() {
