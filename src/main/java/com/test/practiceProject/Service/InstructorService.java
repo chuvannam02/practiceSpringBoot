@@ -1,17 +1,23 @@
 package com.test.practiceProject.Service;
 
 import com.test.practiceProject.DTO.InstructorDTO;
+import com.test.practiceProject.Entity.CourseEntity;
 import com.test.practiceProject.Entity.InstructorDetail;
 import com.test.practiceProject.Entity.InstructorEntity;
 import com.test.practiceProject.Error.BadRequestException;
+import com.test.practiceProject.Repository.CourseRepository;
 import com.test.practiceProject.Repository.InstructorDetailRepository;
 import com.test.practiceProject.Repository.InstructorRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +26,7 @@ import java.util.Optional;
 public class InstructorService {
     InstructorRepository instructorRepository;
     InstructorDetailRepository instructorDetailRepository;
+    CourseRepository courseRepository;
 
     public void createNewInstructor(InstructorDTO instructorDTO) {
         // create a new instructor detail
@@ -47,10 +54,18 @@ public class InstructorService {
         if (instructor != null) throw new BadRequestException("Không tìm thấy thông tin người hướng dẫn!", status);
     }
 
+    @Transactional
     public InstructorEntity getInstructorById(int id) {
         Optional<InstructorEntity> instructor = instructorRepository.searchById(id);
         if (instructor.isPresent()) {
-            return instructor.get();
+            InstructorEntity instructorEntity = instructor.get();
+
+            // Tải danh sách courses từ courseRepository
+            List<CourseEntity> courses = courseRepository.findByInstructorId(id);
+            // Đảm bảo rằng danh sách courses đã được nạp
+            instructorEntity.setCourses(courses);
+
+            return instructorEntity;
         } else {
             HttpStatus status = HttpStatus.NOT_FOUND;
             throw new BadRequestException("Không tìm thấy thông tin hướng dẫn!", status);

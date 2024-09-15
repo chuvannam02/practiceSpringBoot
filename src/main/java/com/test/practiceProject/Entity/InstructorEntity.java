@@ -1,8 +1,11 @@
 package com.test.practiceProject.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Entity
 @Table(name = "`instructor`")
@@ -40,6 +43,11 @@ public class InstructorEntity {
     // it will fetch the details of the Parent only i.e. instructor details will not be fetched in a single query.
     @JoinColumn(name = "instructor_detail_id")
     InstructorDetail instructorDetail;
+
+    // Instructor-Course One-To-Many Bidirectional Relationship Mapping
+    @OneToMany(mappedBy = "instructor", cascade = { CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<CourseEntity> courses;
 
     @Override
     public String toString() {

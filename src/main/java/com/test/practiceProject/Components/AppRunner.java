@@ -26,18 +26,18 @@ public class AppRunner implements CommandLineRunner {
         long start = System.currentTimeMillis();
 
         // Kick of multiple, asynchronous lookups
-        CompletableFuture<UserGithub> page1 = gitHubLookupService.findUser("PivotalSoftware");
-        CompletableFuture<UserGithub> page2 = gitHubLookupService.findUser("CloudFoundry");
-        CompletableFuture<UserGithub> page3 = gitHubLookupService.findUser("Spring-Projects");
-
-        // Wait until they are all done
-        CompletableFuture.allOf(page1,page2,page3).join();
+//        CompletableFuture<UserGithub> page1 = gitHubLookupService.findUser("PivotalSoftware");
+//        CompletableFuture<UserGithub> page2 = gitHubLookupService.findUser("CloudFoundry");
+//        CompletableFuture<UserGithub> page3 = gitHubLookupService.findUser("Spring-Projects");
+//
+//        // Wait until they are all done
+//        CompletableFuture.allOf(page1,page2,page3).join();
 
         // Print results, including elapsed time
         logger.info("Elapsed time: " + (System.currentTimeMillis() - start));
-        logger.info("--> " + page1.get());
-        logger.info("--> " + page2.get());
-        logger.info("--> " + page3.get());
+//        logger.info("--> " + page1.get());
+//        logger.info("--> " + page2.get());
+//        logger.info("--> " + page3.get());
 
 
         // storing multiple values associate with a single key
