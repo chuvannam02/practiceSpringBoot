@@ -8,6 +8,7 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -51,7 +52,19 @@ public class ErrorCustom {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ApiResponse> handleConstraintViolationException(ConstraintViolationException ex) {
-        String message = ex.getConstraintViolations().stream().collect(StringBuilder::new, (sb, v) -> sb.append(v.getMessage()).append("\n"), StringBuilder::append).toString();
+        System.out.println(ex.getConstraintViolations());
+        String message = ex.getConstraintViolations().stream().collect(StringBuilder::new, (sb, v) -> sb.append(v.getMessage()), StringBuilder::append).toString();
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        return ResponseEntity
+                .status(status)
+                .body(new ApiResponse(status.toString(), message));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ApiResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        String message = ex.getBindingResult().getFieldErrors().stream().collect(StringBuilder::new, (sb, v) -> sb.append(v.getDefaultMessage()), StringBuilder::append).toString();
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         return ResponseEntity
