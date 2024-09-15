@@ -3,6 +3,7 @@ package com.test.practiceProject.Service;
 import com.test.practiceProject.DTO.CourseDTO;
 import com.test.practiceProject.DTO.InstructorDTO;
 import com.test.practiceProject.DTO.ReviewDTO;
+import com.test.practiceProject.DTO.StudentDTO;
 import com.test.practiceProject.Entity.CourseEntity;
 import com.test.practiceProject.Entity.InstructorEntity;
 import com.test.practiceProject.Entity.ReviewEntity;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
@@ -54,24 +56,33 @@ public class CourseService {
 
         CourseEntity course = courseOptional.get();
 
-        CourseDTO courseDTO = new CourseDTO();
+        CourseDTO  courseDTO = new CourseDTO();
         courseDTO.setId(course.getId());
         courseDTO.setTitle(course.getTitle());
 
-        // Chuyển đổi danh sách ReviewEntity thành danh sách ReviewDTO
-        List<ReviewEntity> reviews = course.getReviews();
-        List<ReviewDTO> reviewDTOs = new ArrayList<>();
-        for (ReviewEntity review : reviews) {
+        // Convert ReviewEntity list to ReviewDTO list
+        List<ReviewDTO> reviewDTOs = course.getReviews().stream().map(review -> {
             ReviewDTO reviewDTO = new ReviewDTO();
             reviewDTO.setId(review.getId());
-            reviewDTO.setComment(review.getComment()); // Giả sử ReviewDTO có thuộc tính comment
-            reviewDTO.setRating(review.getRating());   // Giả sử ReviewDTO có thuộc tính rating
-            reviewDTOs.add(reviewDTO);
-        }
+            reviewDTO.setComment(review.getComment());
+            reviewDTO.setRating(review.getRating());
+            return reviewDTO;
+        }).collect(Collectors.toList());
         courseDTO.setReviews(reviewDTOs);
 
+        // Convert StudentEntity list to StudentDTO list
+        List<StudentDTO> studentDTOs = course.getStudents().stream().map(student -> {
+            StudentDTO studentDTO = new StudentDTO();
+            studentDTO.setId(student.getId());
+            studentDTO.setName(student.getName());
+            studentDTO.setEmail(student.getEmail());
+            studentDTO.setPhone(student.getPhone());
+            studentDTO.setAddress(student.getAddress());
+            return studentDTO;
+        }).toList();
+        courseDTO.setStudents(studentDTOs);
 
-        // Chuyển đổi InstructorEntity thành InstructorDTO
+        // Convert InstructorEntity to InstructorDTO
         InstructorEntity instructor = course.getInstructor();
         if (instructor != null) {
             InstructorDTO instructorDTO = new InstructorDTO();

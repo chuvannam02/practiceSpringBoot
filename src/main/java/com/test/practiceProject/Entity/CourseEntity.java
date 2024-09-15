@@ -1,6 +1,8 @@
 package com.test.practiceProject.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -31,6 +33,7 @@ public class CourseEntity {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
+    @JsonIgnore
     List<ReviewEntity> reviews;
 
     @ManyToMany(fetch = FetchType.LAZY,
@@ -41,6 +44,7 @@ public class CourseEntity {
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
+    @JsonManagedReference // Prevent circular reference when serializing student with courses
+    @JsonBackReference // Prevent circular reference when serializing course with students
     List<StudentEntity> students;
-
 }

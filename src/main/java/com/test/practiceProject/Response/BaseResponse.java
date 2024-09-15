@@ -1,6 +1,7 @@
 package com.test.practiceProject.Response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.test.practiceProject.DTO.BookDTO;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseResponse {
     @JsonProperty("error_code")
     private String error_code;
