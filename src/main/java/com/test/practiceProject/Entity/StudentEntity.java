@@ -1,6 +1,5 @@
 package com.test.practiceProject.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,30 +7,30 @@ import lombok.experimental.FieldDefaults;
 import java.util.List;
 
 @Entity
-@Table(name = "`course`")
+@Table(name = "`student`")
 @Getter
 @Setter
+@NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class CourseEntity {
+@FieldDefaults(level = AccessLevel.PRIVATE )
+public class StudentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     int id;
 
-    @Column(name = "title")
-    String title;
+    @Column(name = "name")
+    String name;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "instructor_id")
-    @JsonBackReference
-    InstructorEntity instructor;
+    @Column(name = "email")
+    String email;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id")
-    List<ReviewEntity> reviews;
+    @Column(name = "phone")
+    String phone;
+
+    @Column(name = "address")
+    String address;
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
@@ -41,6 +40,6 @@ public class CourseEntity {
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
-    List<StudentEntity> students;
+    List<CourseEntity> courses;
 
 }

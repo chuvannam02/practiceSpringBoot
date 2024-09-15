@@ -1,8 +1,11 @@
 package com.test.practiceProject.DTO;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.test.practiceProject.Entity.ReviewEntity;
 import lombok.Data;
 import lombok.Getter;
+
+import java.util.List;
 
 @Data
 @Getter
@@ -12,4 +15,5 @@ public class CourseDTO {
     private String title;
     private Integer  instructor_id;
     private InstructorDTO instructor;
+    private List<ReviewDTO> reviews;
 }

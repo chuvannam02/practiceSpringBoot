@@ -2,8 +2,10 @@ package com.test.practiceProject.Service;
 
 import com.test.practiceProject.DTO.CourseDTO;
 import com.test.practiceProject.DTO.InstructorDTO;
+import com.test.practiceProject.DTO.ReviewDTO;
 import com.test.practiceProject.Entity.CourseEntity;
 import com.test.practiceProject.Entity.InstructorEntity;
+import com.test.practiceProject.Entity.ReviewEntity;
 import com.test.practiceProject.Error.BadRequestException;
 import com.test.practiceProject.Repository.CourseRepository;
 import com.test.practiceProject.Repository.InstructorRepository;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,10 +54,22 @@ public class CourseService {
 
         CourseEntity course = courseOptional.get();
 
-        // Chuyển đổi thành DTO
         CourseDTO courseDTO = new CourseDTO();
         courseDTO.setId(course.getId());
         courseDTO.setTitle(course.getTitle());
+
+        // Chuyển đổi danh sách ReviewEntity thành danh sách ReviewDTO
+        List<ReviewEntity> reviews = course.getReviews();
+        List<ReviewDTO> reviewDTOs = new ArrayList<>();
+        for (ReviewEntity review : reviews) {
+            ReviewDTO reviewDTO = new ReviewDTO();
+            reviewDTO.setId(review.getId());
+            reviewDTO.setComment(review.getComment()); // Giả sử ReviewDTO có thuộc tính comment
+            reviewDTO.setRating(review.getRating());   // Giả sử ReviewDTO có thuộc tính rating
+            reviewDTOs.add(reviewDTO);
+        }
+        courseDTO.setReviews(reviewDTOs);
+
 
         // Chuyển đổi InstructorEntity thành InstructorDTO
         InstructorEntity instructor = course.getInstructor();
