@@ -16,7 +16,6 @@ import java.util.function.Predicate;
 @RestController
 @RequestMapping("/v1/book")
 @CrossOrigin(origins = "*")
-
 public class BookController {
     @Autowired
     BookService bookService;
@@ -123,5 +122,12 @@ public class BookController {
         if (value != null && isValid.test(value)) {
             map.put(key, value);
         }
+    }
+
+    @GetMapping("/get-list-books-sorted-by-name")
+    public ResponseEntity<BaseResponse> getListBooksSortedByName() {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setObject(bookService.getListBooksSortedByName());
+        return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
 }

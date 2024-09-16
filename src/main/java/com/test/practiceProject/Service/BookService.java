@@ -213,4 +213,10 @@ public class BookService {
             default -> BookType.MYSTERY;
         };
     }
+
+    public Set<BookEntity> getListBooksSortedByName() {
+        Set<BookEntity> books = new TreeSet<>(Comparator.comparing(BookEntity::getCreatedDate).reversed());
+        books.addAll(bookRepository.findAll());
+        return books;
+    }
 }
