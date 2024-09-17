@@ -31,12 +31,13 @@ public class BookEntity extends BaseEntity implements Serializable {
     String description;
     transient int copies;
 
-    // Trạng thái sách:  - 0: Đang được mượn - 1: Có thể mượ n
+    // Trạng thái sách:  - 0: Đang được mượn - 1: Có thể mượ'/n
     int status;
 
     @Enumerated(EnumType.STRING)
     BookType bookType;
 //    https://gpcoder.com/2610-treeset-va-su-dung-comparable-comparator-trong-java/
+//    https://www.geeksforgeeks.org/treeset-in-java-with-examples/
 //    @Override
 //    public int compare(BookEntity o1, BookEntity o2) {
 //        return o1.getName().compareTo(o2.getName());
