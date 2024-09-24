@@ -26,8 +26,8 @@ public class ApiSecurityConfig {
                         ("Bearer Authentication", createAPIKeyScheme()))
                 .info(new Info().title("My REST API")
                         .description("Some custom description of API.")
-                        .version("1.0").contact(new Contact().name("Sallo Szrajbman")
-                                .email( "www.baeldung.com").url("salloszraj@gmail.com"))
+                        .version("1.0").contact(new Contact().name("Chu Văn Nam")
+                                .email( "namcv12@gmail.com").url("11202660@st.neu.edu.vn"))
                         .license(new License().name("License of API")
                                 .url("API license URL")));
     }
