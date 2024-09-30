@@ -3,6 +3,7 @@ package com.test.practiceProject.Service;
 import com.test.practiceProject.Entity.AppParams;
 import com.test.practiceProject.Entity.LoginEntity;
 import com.test.practiceProject.Error.BadRequestException;
+import com.test.practiceProject.Records.RecordPerson;
 import com.test.practiceProject.Repository.AppParamsRepository;
 import com.test.practiceProject.Request.AppParamsRequest;
 import com.test.practiceProject.Utils.Enums.DayOfWeek;
@@ -100,5 +101,12 @@ public class AppParamsService {
             case SATURDAY, SUNDAY -> "Weekend";
             default -> "Invalid day!";
         };
+    }
+
+    public RecordPerson createRecordPerson(String name, int age) {
+        return RecordPerson.builder()
+                .name(name)
+                .age(age)
+                .build();
     }
 }

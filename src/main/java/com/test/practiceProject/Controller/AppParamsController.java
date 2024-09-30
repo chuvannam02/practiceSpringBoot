@@ -65,4 +65,11 @@ public class AppParamsController {
         baseResponse.setObject(appParamsService.getDayOfType(DayOfWeek.MONDAY));
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
+
+    @PostMapping("/test-record")
+    public ResponseEntity<BaseResponse> testRecord() {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setObject(appParamsService.createRecordPerson("Chunam", 25));
+        return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
+    }
 }
