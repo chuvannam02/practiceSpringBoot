@@ -4,6 +4,8 @@ import com.test.practiceProject.Entity.AppParams;
 import com.test.practiceProject.Request.AppParamsRequest;
 import com.test.practiceProject.Response.BaseResponse;
 import com.test.practiceProject.Service.AppParamsService;
+import com.test.practiceProject.Utils.Enums.DayOfWeek;
+import com.test.practiceProject.Utils.Enums.Season;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,20 @@ public class AppParamsController {
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setObject(appParamsService.createNew(params));
 //        appParamsService.createNew(params);
+        return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-season")
+    public ResponseEntity<BaseResponse> getSeason() {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setObject(appParamsService.getCharacteristicOfSeason(Season.SUMMER));
+        return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-day-type")
+    public ResponseEntity<BaseResponse> getDayType() {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setObject(appParamsService.getDayOfType(DayOfWeek.MONDAY));
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
 }

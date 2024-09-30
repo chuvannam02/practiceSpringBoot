@@ -1,6 +1,7 @@
 package com.test.practiceProject.Components;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
@@ -22,5 +23,11 @@ public class RestControllerAspect {
     @Before("execution(public * com.test.practiceProject.Controller.*.*(..))")
     public void logBeforeRestCall(JoinPoint pjp) throws Throwable {
         logger.info(":::::AOP Before REST call:::::" + pjp);
+    }
+
+    @AfterReturning(pointcut = "execution(public * com.test.practiceProject.Controller.*.*(..))", returning = "returnValue")
+    public void logAfterRESTCall(JoinPoint pjp, Object returnValue) throws Throwable {
+        logger.info(":::::AOP After REST call:::::" + pjp);
+        logger.info(":::::AOP After REST call Return Value:::::" + returnValue);
     }
 }
