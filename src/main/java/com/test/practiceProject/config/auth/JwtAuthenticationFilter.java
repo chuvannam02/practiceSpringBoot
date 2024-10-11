@@ -28,7 +28,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/login",
             "/api-docs/**",
             "/swagger-ui/**",
-            "/swagger-ui.html"
+            "/swagger-ui.html",
+            "/v1/product/**"
     );
     @Autowired
     private JwtTokenProvider tokenProvider;

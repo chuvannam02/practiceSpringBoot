@@ -25,6 +25,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -41,6 +42,7 @@ public class WebSecurityConfig {
             "/api/create",
             "/api/login",
             "/swagger-ui.html",
+            "/v1/product/**",
     };
 
     @Bean
@@ -58,8 +60,8 @@ public class WebSecurityConfig {
         http.cors().and()
                 .csrf().disable() // Disable CSRF protection for simplicity
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers(AUTH_WHITELIST).permitAll() // Whitelist requests
-                        .anyRequest().authenticated() // Require authentication for other requests
+                        .requestMatchers(AUTH_WHITELIST).permitAll() // Permit all whitelisted URLs
+                        .anyRequest().authenticated()  // All other requests require authentication
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class) // Add custom filter
                 .exceptionHandling(exceptionHandling ->

@@ -8,11 +8,13 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -90,6 +92,15 @@ public class ErrorCustom {
         base.setError_code(HttpStatus.FORBIDDEN.toString());
         base.setMessage(getLocalizedMessage("exception.accessDenied"));
         return new ResponseEntity<>(base, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(HttpMessageNotWritableException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<BaseResponse> handleDefaultHandlerExceptionResolver(DefaultHandlerExceptionResolver ex) {
+        BaseResponse base = new BaseResponse();
+        base.setError_code(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        base.setMessage(getLocalizedMessage("exception.internalServerError"));
+        return new ResponseEntity<>(base, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private String getLocalizedMessage(String translationKey) {
