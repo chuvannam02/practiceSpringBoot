@@ -50,4 +50,4 @@ WORKDIR /project
 EXPOSE 8080
 
 # Start the Spring Boot application
-ENTRYPOINT ["java", "-Duser.timezone=GMT+7", "-jar", "practiceProject-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=GMT+7", "-Dspring.profiles.active=prod", "-jar", "practiceProject-0.0.1-SNAPSHOT.jar"]

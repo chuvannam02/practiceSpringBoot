@@ -66,6 +66,7 @@ public class WebSecurityConfig {
                 .csrf().disable() // Disable CSRF protection for simplicity
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)

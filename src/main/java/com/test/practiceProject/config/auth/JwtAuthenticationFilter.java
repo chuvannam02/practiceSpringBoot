@@ -41,6 +41,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
+        if (requestURI.equals("/actuator/health")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         log.info("Request URI: {}", requestURI);
 
         // Skip JWT validation for excluded URLs
