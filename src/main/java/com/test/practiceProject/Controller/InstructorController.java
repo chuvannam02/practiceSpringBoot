@@ -15,7 +15,7 @@ public class InstructorController {
     private InstructorService instructorService;
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse> createNewInstructor(@RequestBody InstructorDTO instructorDTO) {
+    public ResponseEntity<BaseResponse> createNewInstructor(@RequestBody InstructorDTO instructorDTO) throws Exception {
         BaseResponse baseResponse = new BaseResponse();
         instructorService.createNewInstructor(instructorDTO);
         baseResponse.setError_code("0");

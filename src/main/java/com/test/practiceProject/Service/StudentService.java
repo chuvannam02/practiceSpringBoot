@@ -26,26 +26,24 @@ public class StudentService {
 
     @Transactional
     public void createNewStudent(StudentDTO studentDTO) {
-        Optional<CourseEntity> courseOptional = courseRepository.findById(studentDTO.getCourseId());
-        if (courseOptional.isEmpty()) {
-            throw new BadRequestException("Course not found with ID: " + studentDTO.getCourseId());
-        }
-
-        CourseEntity courseEntity = courseOptional.get();
-
-        // create new student with initialized courses list
         StudentEntity studentEntity = StudentEntity.builder()
                 .name(studentDTO.getName())
                 .email(studentDTO.getEmail())
                 .phone(studentDTO.getPhone())
                 .address(studentDTO.getAddress())
-                .courses(new ArrayList<>()) // Initialize the courses list
+                .courses(new ArrayList<>())
                 .build();
 
-        // Add the course to the student's courses
-        studentEntity.getCourses().add(courseEntity);
+        if (studentDTO.getCourseId() != null) {
+            Optional<CourseEntity> courseOptional = courseRepository.findById(studentDTO.getCourseId());
+            if (courseOptional.isPresent()) {
+                CourseEntity courseEntity = courseOptional.get();
+                studentEntity.getCourses().add(courseEntity);
+            } else {
+                throw new BadRequestException("Course not found with ID: " + studentDTO.getCourseId());
+            }
+        }
 
-        // Save the student
         studentRepository.saveAndFlush(studentEntity);
     }
 

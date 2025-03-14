@@ -6,6 +6,7 @@ import com.test.practiceProject.Error.BadRequestException;
 import com.test.practiceProject.Repository.AccountRepository;
 import com.test.practiceProject.config.auth.CustomUserDetails;
 import com.test.practiceProject.config.auth.JwtTokenProvider;
+import com.test.practiceProject.config.auth.SecurityContext;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtHandler;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +18,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -116,7 +116,8 @@ public class AccountService implements UserDetailsService {
        if (token != null) {
            String username = JwtTokenProvider.extractUsername(token);
            if (Objects.equals(username, SecurityContextHolder.getContext().getAuthentication().getName())) {
-
+                SecurityContext.clear();
+                new SecurityContextLogoutHandler().logout(request, null, null);
            }
        }
     }

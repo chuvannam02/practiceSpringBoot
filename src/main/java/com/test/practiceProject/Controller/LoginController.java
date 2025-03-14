@@ -6,6 +6,7 @@ import com.test.practiceProject.Response.AuthenticateResponse;
 import com.test.practiceProject.Response.BaseResponse;
 import com.test.practiceProject.Service.AccountService;
 import com.test.practiceProject.config.auth.JwtTokenProvider;
+import com.test.practiceProject.config.auth.SecurityContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ public class LoginController {
             throw new UsernameNotFoundException("Invalid user request !");
         }
         BaseResponse baseResponse = new BaseResponse();
+        SecurityContext.setCurrentToken(jwtToken);
         AuthenticateResponse authenticateResponse = new AuthenticateResponse();
         authenticateResponse.setExp(expTime);
         authenticateResponse.setAccess_token(jwtToken);

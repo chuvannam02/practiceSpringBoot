@@ -1,17 +1,20 @@
 package com.test.practiceProject.config;
 
 import com.test.practiceProject.config.auth.JwtTokenProvider;
+import com.test.practiceProject.config.auth.SecurityContext;
 import io.jsonwebtoken.Jwt;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+
+import static com.test.practiceProject.config.auth.JwtTokenProvider.getTokenFromRequest;
 
 /**
  * @Project: practiceProject
@@ -21,23 +24,18 @@ import java.io.IOException;
  */
 public class RestTemplateHeaderModifierInterceptor implements ClientHttpRequestInterceptor {
     private static final Logger log = LoggerFactory.getLogger(RestTemplateHeaderModifierInterceptor.class);
+
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        ClientHttpResponse response = execution.execute(request, body);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // Get the token from the SecurityContext (ThreadLocal)
+        String token = SecurityContext.getCurrentToken();
+        log.info("Token from SecurityContext: " + token);
 
-        log.info("Authentication: {}", authentication);
-        log.info("Response: {}", response);
-        log.info("Request: {}", request);
-        log.info("Token: {}", authentication.getCredentials());
-        if (authentication == null) {
-            return response;
-        }
-//        Jwt jwt = (Jwt) authentication.getPrincipal();
-//        if (jwt == null) {
-//            return response;
+//        if (StringUtils.hasText(token)) {
+//            request.getHeaders().add("Authorization", "Bearer " + token);
+//            log.info("Added token to request: " + token);
 //        }
-//        response.getHeaders().add("Authorization", "Bearer " + jwt.toString());
-        return response;
+
+        return execution.execute(request, body);
     }
 }

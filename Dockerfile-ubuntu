@@ -1,0 +1,37 @@
+FROM debian:bookworm-slim
+
+# Update and install necessary packages
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    iputils-ping \
+    telnet \
+    vim \
+    sudo && \
+    rm -rf /var/lib/apt/lists/*  # Clean up apt cache to reduce image size
+
+# Additional steps if needed
+
+# Copy the application files
+COPY . .
+
+# Create a user chuvannam and set it up with sudo privileges (optional, but helps in some cases)
+RUN adduser --disabled-password --gecos "" chuvannam \
+    && echo "chuvannam ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/chuvannam
+
+# Set working directory for the application
+WORKDIR /project
+
+# Switch to chuvannam user
+USER chuvannam
+
+# Create and manipulate directories as the user
+RUN mkdir -p /home/chuvannam/test \
+    && touch /home/chuvannam/test/test.txt \
+    && ls -l /home/chuvannam/test
+
+# Set the default working directory to /home/chuvannam/test (optional)
+WORKDIR /home/chuvannam/test
+
+# Expose any necessary ports (optional)
+EXPOSE 8080

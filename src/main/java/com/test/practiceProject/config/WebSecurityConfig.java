@@ -4,6 +4,7 @@ import com.test.practiceProject.config.auth.AuditorAwareImpl;
 import com.test.practiceProject.config.auth.JwtAuthenticationFilter;
 import com.test.practiceProject.config.auth.UserInfoUserDetailsService;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,9 +33,11 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
+@RequiredArgsConstructor
 public class WebSecurityConfig {
-    @Autowired
-    private JwtAuthenticationFilter authFilter;
+    private final JwtAuthenticationFilter authFilter;
+
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     private final String[] AUTH_WHITELIST = {
             "/api-docs/**",
@@ -43,6 +46,7 @@ public class WebSecurityConfig {
             "/api/login",
             "/swagger-ui.html",
             "/v1/product/**",
+            "/greeting/**"
     };
 
     @Bean
@@ -60,17 +64,14 @@ public class WebSecurityConfig {
         http.cors().and()
                 .csrf().disable() // Disable CSRF protection for simplicity
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers(AUTH_WHITELIST).permitAll() // Permit all whitelisted URLs
-                        .anyRequest().authenticated()  // All other requests require authentication
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class) // Add custom filter
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling.authenticationEntryPoint((request, response, exception) -> {
-                            response.sendError(HttpServletResponse.SC_FORBIDDEN, exception.getMessage());
-                            response.getWriter().write("Access Denied!");
-                        })
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 )
-                .authenticationProvider(authenticationProvider()); // Add custom authentication provider
+                .authenticationProvider(authenticationProvider());
 
         return http.build();
     }

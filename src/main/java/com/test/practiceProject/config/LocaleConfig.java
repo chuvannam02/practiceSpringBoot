@@ -58,4 +58,46 @@ public class LocaleConfig implements WebMvcConfigurer {
     {
         registry.addInterceptor(localeChangeInterceptor());
     }
+
+//    ✅ 3. Tạo MessageSource để hỗ trợ i18n
+//    java
+//            Copy
+//    Edit
+//    @Bean
+//    public MessageSource messageSource() {
+//        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+//        messageSource.setBasename("classpath:ValidationMessages");
+//        messageSource.setDefaultEncoding("UTF-8");
+//        return messageSource;
+//    }
+//
+//    @Bean
+//    public LocalValidatorFactoryBean getValidator() {
+//        LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
+//        bean.setValidationMessageSource(messageSource());
+//        return bean;
+//    }
+
+//     4. Cấu hình Locale (i18n)
+//    java
+//            Copy
+//    Edit
+//    @Bean
+//    public LocaleResolver localeResolver() {
+//        SessionLocaleResolver slr = new SessionLocaleResolver();
+//        slr.setDefaultLocale(Locale.forLanguageTag("vi"));
+//        return slr;
+//    }
+//
+//    @Bean
+//    public LocaleChangeInterceptor localeChangeInterceptor() {
+//        LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
+//        lci.setParamName("lang"); // ví dụ: ?lang=en
+//        return lci;
+//    }
+//
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(localeChangeInterceptor());
+//    }
 }

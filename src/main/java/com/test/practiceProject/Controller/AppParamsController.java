@@ -72,4 +72,11 @@ public class AppParamsController {
         baseResponse.setObject(appParamsService.createRecordPerson("Chunam", 25));
         return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
     }
+
+    @GetMapping("/test1")
+    public ResponseEntity<BaseResponse> test1() {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setObject(appParamsService.test());
+        return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
+    }
 }

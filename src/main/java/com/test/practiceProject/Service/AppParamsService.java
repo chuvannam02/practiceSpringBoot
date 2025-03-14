@@ -8,6 +8,7 @@ import com.test.practiceProject.Repository.AppParamsRepository;
 import com.test.practiceProject.Request.AppParamsRequest;
 import com.test.practiceProject.Utils.Enums.DayOfWeek;
 import com.test.practiceProject.Utils.Enums.Season;
+import com.test.practiceProject.Utils.NoNullsList;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,8 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Predicate;
 
 @Service
 @Slf4j
@@ -108,5 +109,40 @@ public class AppParamsService {
                 .name(name)
                 .age(age)
                 .build();
+    }
+
+    public Map<String, List<String>> test() {
+        List<String> list = new NoNullsList<>();
+        list.add("s1");
+        list.add("s2");
+        list.add("s3");
+        list.add(null);
+        list.add("s4");
+        list.add(null);
+
+        List<String> list1 = new ArrayList<>();
+        list1.add("Chu Van Nam");
+        list1.add(null);
+        list1.add("Tran Trung Hieu");
+        list1.add("Tran Xuan Trien");
+
+//        list1.removeIf(new Predicate<String>() {
+//            @Override
+//            public boolean test(String s) {
+//                return !s.isEmpty();
+//            }
+//        });
+        list1.removeIf(new Predicate<String>() {
+            @Override
+            public boolean test(String s) {
+                return s != null;
+            }
+        });
+        list1.removeIf(Objects::isNull);
+
+        return Map.of(
+                "NoNullsList", list ,
+                "ArrayList", list1
+        );
     }
 }

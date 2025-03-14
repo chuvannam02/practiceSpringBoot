@@ -31,4 +31,12 @@ public class ProductController {
         baseResponse.setObject(productService.getProduct());
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
+
+    @GetMapping("test")
+    public ResponseEntity<BaseResponse> getTest() {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setMessage("Test fetched successfully");
+        productService.test();
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
 }
