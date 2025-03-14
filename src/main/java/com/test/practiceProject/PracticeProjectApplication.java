@@ -1,12 +1,15 @@
 package com.test.practiceProject;
 
 import com.test.practiceProject.Request.LocalDatasource;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -20,6 +23,9 @@ import java.util.concurrent.Executor;
 //@EnableScheduling
 @EnableAsync
 public class PracticeProjectApplication {
+
+	@Autowired
+	private Environment environment;
 
 	public static void main(String[] args) {
 //		SpringApplication.run(PracticeProjectApplication.class, args);
@@ -99,6 +105,11 @@ public class PracticeProjectApplication {
 		return runner -> {
 			System.out.println("Hello Spring Boot 2.4.2");
 		};
+	}
+
+	@PostConstruct
+	public void printDatasourceUrl() {
+		System.out.println("JDBC URL: " + environment.getProperty("spring.datasource.url"));
 	}
 
 	@Bean

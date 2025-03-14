@@ -1,44 +1,49 @@
 version: '3.9'
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      - MYSQL_HOST=db
-      - MYSQL_USER=root
-      - MYSQL_DATABASE=micro_db
-      - MYSQL_PASSWORD=Huykenzj994
-      - MYSQL_PORT=3306
-    depends_on:
-      db:
-        condition: service_healthy
-    ports:
-      - "8080:8080"
-    networks:
-      - app-network
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        environment:
+            - MYSQL_HOST=db
+            - MYSQL_USER=root
+            - MYSQL_DATABASE=micro_db
+            - MYSQL_PASSWORD=Huykenzj994
+            - MYSQL_PORT=3306
+        depends_on:
+            db:
+                condition: service_healthy
+        ports:
+            - "8080:8080"
+        networks:
+            - app-network
+        healthcheck:
+            test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  db:
-    image: mysql:8.0.40-bookworm
-    container_name: mysql-container
-    environment:
-      MYSQL_DATABASE: micro_db
-      MYSQL_ROOT_PASSWORD: Huykenzj994
-    ports:
-      - "3307:3306"
-    networks:
-      - app-network
-    volumes:
-      - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    db:
+        image: mysql:8.0.40-bookworm
+        container_name: mysql-container
+        environment:
+            MYSQL_DATABASE: micro_db
+            MYSQL_ROOT_PASSWORD: Huykenzj994
+        ports:
+            - "3307:3306"
+        networks:
+            - app-network
+        volumes:
+            - db_data:/var/lib/mysql
+        healthcheck:
+            test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+            interval: 10s
+            timeout: 5s
+            retries: 10
 
 networks:
-  app-network:
+    app-network:
 
 volumes:
-  db_data:
+    db_data:
