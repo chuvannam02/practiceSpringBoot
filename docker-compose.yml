@@ -2,9 +2,10 @@ version: '3.9'
 
 services:
     app:
-        build:
-            context: .
-            dockerfile: Dockerfile
+        image: betaplaptrinh/springboot
+#        build:
+#            context: .
+#            dockerfile: Dockerfile
         environment:
             - MYSQL_HOST=db
             - MYSQL_USER=root

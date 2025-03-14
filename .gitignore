@@ -4,6 +4,12 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+.git
+*.md
+Dockerfile
+docker-compose.yml
+wait-for-it.sh
+
 ### STS ###
 .apt_generated
 .classpath
