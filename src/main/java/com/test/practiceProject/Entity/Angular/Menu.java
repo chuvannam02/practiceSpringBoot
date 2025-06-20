@@ -47,7 +47,7 @@ public class Menu extends BaseEntity implements Comparable<Menu>{
     private String appName;
 
     // Thứ tự sắp xếp
-    private Integer order;
+    private Integer idx;
 
     // Với status
     //    1. Hiển thị
@@ -89,15 +89,15 @@ public class Menu extends BaseEntity implements Comparable<Menu>{
     @Override
     public int compareTo(Menu o) {
         // If both objects have order values, compare them
-        if (this.order != null && o.getOrder() != null) {
-            return this.order.compareTo(o.getOrder());
+        if (this.idx != null && o.getIdx() != null) {
+            return this.idx.compareTo(o.getIdx());
         }
         // If this object has no order but the other does, this is considered "greater" (comes after)
-        else if (this.order == null && o.getOrder() != null) {
+        else if (this.idx == null && o.getIdx() != null) {
             return 1;
         }
         // If this object has order but the other doesn't, this is considered "less" (comes before)
-        else if (this.order != null && o.getOrder() == null) {
+        else if (this.idx != null && o.getIdx() == null) {
             return -1;
         }
         // If both objects have no order, compare by ID as a fallback

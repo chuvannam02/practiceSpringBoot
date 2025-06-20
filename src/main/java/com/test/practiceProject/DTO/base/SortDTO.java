@@ -1,7 +1,7 @@
 package com.test.practiceProject.DTO.base;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 /**
  * @Project: practiceProject
@@ -12,7 +12,7 @@ import lombok.Data;
  */
 
 @Data
-@Builder
+@SuperBuilder
 public class SortDTO {
     private Integer page;
     private Integer size;

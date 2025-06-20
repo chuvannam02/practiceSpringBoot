@@ -1,6 +1,8 @@
 package com.test.practiceProject.Entity.Angular;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +26,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class RoleMenu {
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Integer id;
     private Integer roleId;
     private Integer menuId;

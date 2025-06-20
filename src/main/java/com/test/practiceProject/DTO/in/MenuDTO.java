@@ -4,10 +4,10 @@ import com.test.practiceProject.DTO.base.SortDTO;
 import com.test.practiceProject.Utils.Validations.MaxLengthWithField;
 import com.test.practiceProject.Utils.Validations.groups.Create;
 import com.test.practiceProject.Utils.Validations.payloads.Severity;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * @Project: practiceProject
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
  */
 
 @Data
-@Builder
+@SuperBuilder
 public class MenuDTO extends SortDTO {
     private Integer id;
 
