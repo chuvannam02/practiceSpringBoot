@@ -4,9 +4,7 @@ import com.test.practiceProject.DTO.base.SortDTO;
 import com.test.practiceProject.Utils.Validations.MaxLengthWithField;
 import com.test.practiceProject.Utils.Validations.groups.Create;
 import com.test.practiceProject.Utils.Validations.payloads.Severity;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 /**

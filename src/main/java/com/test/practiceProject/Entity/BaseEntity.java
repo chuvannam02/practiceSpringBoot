@@ -1,7 +1,5 @@
 package com.test.practiceProject.Entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -13,12 +11,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -51,7 +47,7 @@ public class BaseEntity implements Serializable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(insertable = false)
 //    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @JsonFormat(pattern = "dd-MM-yyyy hh")
-    private LocalDateTime lastModifiedDate;
+//    @JsonFormat(pattern = "dd-MM-yyyy hh")
+    private Instant  lastModifiedDate;
 
 }

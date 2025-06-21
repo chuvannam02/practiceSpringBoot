@@ -3,6 +3,7 @@ package com.test.practiceProject.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.test.practiceProject.Utils.Validations.PasswordConstrain;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;

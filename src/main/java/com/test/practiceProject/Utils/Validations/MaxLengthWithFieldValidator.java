@@ -12,43 +12,31 @@ import jakarta.validation.ConstraintValidatorContext;
  */
 
 public class MaxLengthWithFieldValidator implements ConstraintValidator<MaxLengthWithField, String> {
-    /**
-     * Initializes the validator in preparation for
-     * {@link #isValid(Object, ConstraintValidatorContext)} calls.
-     * The constraint annotation for a given constraint declaration
-     * is passed.
-     * <p>
-     * This method is guaranteed to be called before any use of this instance for
-     * validation.
-     * <p>
-     * The default implementation is a no-op.
-     *
-     * @param constraintAnnotation annotation instance for a given constraint declaration
-     */
+
+    private int max;
+    private String fieldLabel;
+
     @Override
     public void initialize(MaxLengthWithField constraintAnnotation) {
-        ConstraintValidator.super.initialize(constraintAnnotation);
+        this.max = constraintAnnotation.max();
+        this.fieldLabel = constraintAnnotation.fieldLabel();
     }
 
-    /**
-     * Implements the validation logic.
-     * The state of {@code value} must not be altered.
-     * <p>
-     * This method can be accessed concurrently, thread-safety must be ensured
-     * by the implementation.
-     *
-     * @param value   object to validate
-     * @param context context in which the constraint is evaluated
-     * @return {@code false} if {@code value} does not pass the constraint
-     */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null || value.trim().isEmpty()) {
+        if (value == null) return true; // Không kiểm tra null ở đây, để @NotNull xử lý nếu cần
+
+        if (value.length() > max) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("{MaxLength.field}")
+
+            // Tạo thông báo động từ template
+            String errorMessage = fieldLabel + " không được vượt quá " + max + " ký tự.";
+
+            context.buildConstraintViolationWithTemplate(errorMessage)
                     .addConstraintViolation();
             return false;
         }
+
         return true;
     }
 }

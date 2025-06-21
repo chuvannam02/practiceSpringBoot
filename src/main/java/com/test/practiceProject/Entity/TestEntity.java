@@ -1,6 +1,7 @@
 package com.test.practiceProject.Entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ import lombok.experimental.FieldDefaults;
 @Table(name = "test_entity")
 @Entity
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class TestEntity {
+public class TestEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -32,16 +33,4 @@ public class TestEntity {
 
     @Column(name = "status")
     String status;
-
-    @Column(name = "created_by")
-    String createdBy;
-
-    @Column(name = "last_modified_by")
-    String lastModifiedBy;
-
-    @Column(name = "created_date")
-    String createdDate;
-
-    @Column(name = "last_modified_date")
-    String lastModifiedDate;
 }
