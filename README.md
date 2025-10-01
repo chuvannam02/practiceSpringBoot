@@ -51,13 +51,88 @@ docker push chuvannam/practice_springboot
 
 ### 🔹 Contact
 
-- [LinkedIn](https://www.linkedin.com/in/chuvannam02/) <!-- Update this link if needed -->
+- [LinkedIn](https://www.linkedin.com/in/chuvannam02/)
 - Email: chuvannam02@gmail.com
 
 ---
 
 *Always learning, always growing!*
 
+---
+
+🚀 Quản lý nhiều phiên bản Java JDK với SDKMAN!
+✅ Giới thiệu
+
+SDKMAN!
+ là công cụ quản lý nhiều phiên bản JDK và các SDK khác (Gradle, Maven, Kotlin, Scala, v.v…).
+Thay vì phải gỡ cài đặt và cấu hình thủ công biến môi trường, bạn có thể dễ dàng cài đặt, chuyển đổi, gỡ bỏ chỉ bằng vài lệnh đơn giản.
+
+🛠️ Bước 1: Gỡ cài đặt Java JDK cũ
+Trước khi dùng SDKMAN, nên gỡ bản JDK cài thủ công để tránh xung đột:
+Nhấn tổ hợp phím: Windows + I → Apps → Installed apps → Tìm Java JDK → Uninstall.
+
+🧹 Bước 2: Xoá các biến môi trường Java
+Mở Environment Variables (Win + R → sysdm.cpl → Advanced → Environment Variables).
+
+Xoá:
+JAVA_HOME
+Các dòng trong Path có chứa %JAVA_HOME% hoặc C:\Program Files\Java\...
+📌 Ví dụ:
+JAVA_HOME = C:\Program Files\Java\jdk-17
+Path = ...;%JAVA_HOME%\bin;...
+<img width="425" height="457" alt="image" src="https://github.com/user-attachments/assets/18837da3-33ef-43b2-8173-027ad79b2148" />
+<img width="3350" height="1347" alt="image" src="https://github.com/user-attachments/assets/8fbb8155-8b11-4e2b-8f77-f56412e06d89" />
+<img width="613" height="706" alt="image" src="https://github.com/user-attachments/assets/4002069c-519e-4edc-bc81-e2bdc73bc11c" />
+<img width="886" height="972" alt="image" src="https://github.com/user-attachments/assets/9945288e-c5b4-4daf-a0ef-fcb86141a16f" />
+👉 Xoá đi để sau này SDKMAN quản lý.
+
+🐧 Bước 3: Cài đặt SDKMAN!
+SDKMAN không chạy trực tiếp trong CMD/PowerShell, mà cần dùng Git Bash hoặc WSL.
+Mở Git Bash
+<img width="319" height="382" alt="image" src="https://github.com/user-attachments/assets/1f48dcb3-3a08-41db-a66e-fd714f3d2dbf" />
+Chạy lệnh:
+curl -s "https://get.sdkman.io" | bash
+<img width="644" height="375" alt="image" src="https://github.com/user-attachments/assets/8066c3df-026a-47c9-957d-72c226458279" />
+Sau khi cài xong, tải lại config:
+source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+Kiểm tra:
+sdk version
+<img width="439" height="158" alt="image" src="https://github.com/user-attachments/assets/94426252-3ad3-46b7-a320-2fcf54544e33" />
+✅ Nếu thấy version hiện ra tức là cài thành công.
+
+☕ Bước 4: Cài đặt và quản lý JDK bằng SDKMAN
+🔹 Liệt kê các phiên bản JDK có sẵn
+sdk list java
+
+🔹 Cài JDK 21 (Eclipse Temurin)
+sdk install java 21.0.4-tem
+
+🔹 Chuyển mặc định sang JDK 21
+sdk default java 21.0.4-tem
+
+
+Hoặc chỉ dùng tạm trong shell hiện tại:
+
+sdk use java 21.0.4-tem
+
+🔹 Kiểm tra phiên bản hiện tại
+java --version
+
+🧰 Một số lệnh hữu ích
+Lệnh	Chức năng
+sdk list java	Xem các phiên bản JDK khả dụng
+sdk install java <version>	Cài đặt JDK mới
+sdk uninstall java <version>	Gỡ bỏ JDK
+sdk use java <version>	Dùng JDK tạm thời trong shell
+sdk default java <version>	Đặt JDK mặc định cho tất cả shell
+⚡ Kết luận
+
+Với SDKMAN!, bạn có thể:
+Cài nhiều bản JDK (8, 11, 17, 21, …) song song.
+Chuyển đổi nhanh chóng bằng một lệnh.
+
+---
 # Ứng dụng Design Pattern vào thực tế
 ## Sử dụng Creational Design Pattern - Factory Pattern
 -- Tạo ra một Factory đóng vai trò khởi tạo ra các object tuỳ thuộc vào type của chúng
