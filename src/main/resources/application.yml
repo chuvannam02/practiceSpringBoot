@@ -11,6 +11,7 @@ spring:
             hibernate:
                 dialect: org.hibernate.dialect.MySQL8Dialect
         open-in-view: true
+        show-sql: true
     thymeleaf:
         check-template-location: false
     # Misc
@@ -44,3 +45,7 @@ management:
 # Example external API endpoint
 product:
     url: https://dummyjson.com
+---
+jwt:
+    secret-key: ${JWT_SECRET_KEY:67566B59703573367639792F423F4528482B4D6251655468576D5A712904200112312312321}
+    expiration-time: ${JWT_EXPIRATION_TIME_IN_MILISECONDS:604800000L}

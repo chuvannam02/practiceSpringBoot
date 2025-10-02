@@ -154,3 +154,80 @@ Chuyển đổi nhanh chóng bằng một lệnh.
   }
 - Bước 3: Viết các implementation từ interface
 - Bước 4: Tạo ra NotificationFactory
+
+
+# Hướng dẫn cấu hình Redis
+### Khởi tạo Redis server bằng docker
+docker run -d --name redis -p 6379:6379 redis:8.0-alpine
+- Tuy nhiên cần tạo volumn vì nếu tắt container => dữ liệu không được lưu vào đâu => mỗi lần khởi chạy là dữ lệu không còn gì
+1. Tạo Docker volume (xuống dòng bằng cách gõ 2 lần phím space ở cuối dòng)  
+docker volume create redis_data
+2. Chạy Redis với volume mount  
+   docker run -d \
+   --name redis \
+   -p 6379:6379 \
+   -v redis_data:/data \
+   redis:7.2 \
+   redis-server --appendonly yes  
+   docker run -d --name redis -p 6379:6379 -v redis_data:/data redis:8.0-alpine redis-server --appendonly yes  
++ -v redis_data:/data → mount volume redis_data vào thư mục /data trong Redis container.
++ --appendonly yes → bật AOF persistence, Redis sẽ ghi dữ liệu ra file /data/appendonly.aof.  
+🔍 Kiểm tra
+Xem container đang chạy:
+docker ps
+
+Xem volume đã mount:
+docker inspect redis
+Trong phần Mounts sẽ thấy Source: redis_data, Destination: /data.
+
+🔄 Khi bạn stop & remove container
+docker stop redis && docker rm redis
+
+### 3️⃣ Set TTL (Time To Live) cho Redis key trong Spring Boot
+Có 2 cách
+1. (a) Dùng RedisTemplate
+   - @Service  
+   public class CacheService {  
+
+       @Autowired  
+       private RedisTemplate<String, String> redisTemplate;     
+              
+       public void saveWithTTL(String key, String value, long ttlSeconds) {  
+            redisTemplate.opsForValue().set(key, value, ttlSeconds, TimeUnit.SECONDS);  
+       }  
+
+       public String get(String key) {  
+           return redisTemplate.opsForValue().get(key);  
+       }  
+   }  
+   - 👉 Khi gọi saveWithTTL("user:1", "Nam", 120), key sẽ tự động hết hạn sau 120s.
+2. (b) Dùng Spring Cache abstraction
+- Khai báo trong application.yml:
+
+spring:  
+  cache:  
+    type: redis  
+  
+- Thêm config TTL mặc định trong RedisCacheConfiguration:  
+@Configuration    
+@EnableCaching    
+public class RedisConfig {  
+
+    @Bean  
+    public RedisCacheManager cacheManager(RedisConnectionFactory factory) {  
+        return RedisCacheManager.builder(factory)  
+                .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig()  
+                        .entryTtl(Duration.ofMinutes(5))) // TTL mặc định 5 phút  
+                .build();  
+    }  
+}  
+- @Service  
+public class UserService {  
+  
+    @Cacheable(value = "users", key = "#id")  
+    public String getUserById(String id) {  
+        // Lấy từ DB giả định  
+        return "User-" + id;  
+    }  
+}  
+👉 Cache users::id sẽ tự động expire sau 5 phút
