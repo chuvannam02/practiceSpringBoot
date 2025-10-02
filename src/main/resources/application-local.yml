@@ -14,3 +14,4 @@ spring:
             host: localhost
             port: 6379
             timeout: 60000 # 60s connection timeout
+            time-to-live: ${REDIS_TIME_TO_LIVE:300000}
