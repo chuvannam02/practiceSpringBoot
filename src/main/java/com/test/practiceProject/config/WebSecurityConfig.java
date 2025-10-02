@@ -44,6 +44,7 @@ public class WebSecurityConfig {
             "/swagger-ui/**",
             "/api/create",
             "/api/login",
+            "/api/refresh",
             "/swagger-ui.html",
             "/v1/product/**",
             "/greeting/**",

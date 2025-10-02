@@ -36,6 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtTokenProvider tokenProvider;
     @Autowired
     private UserInfoUserDetailsService userDetailsService;
+    @Autowired
+    private com.test.practiceProject.service.RefreshTokenService refreshTokenService;
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
@@ -57,6 +59,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = getTokenFromRequest(request);
         if (token == null) {
             sendErrorResponse(response, HttpStatus.FORBIDDEN, "Token đã hết hạn hoặc không hợp lệ!");
+            return;
+        }
+
+        // Simple blacklist check using expiration time as pseudo-jti
+        String pseudoJti = null;
+        try {
+            pseudoJti = String.valueOf(tokenProvider.extractExpiration(token).getTime());
+        } catch (Exception ignored) {}
+        if (pseudoJti != null && refreshTokenService.isAccessTokenBlacklisted(pseudoJti)) {
+            sendErrorResponse(response, HttpStatus.FORBIDDEN, "Token is revoked");
             return;
         }
 
