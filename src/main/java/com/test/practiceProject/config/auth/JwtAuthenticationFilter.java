@@ -68,7 +68,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             pseudoJti = String.valueOf(tokenProvider.extractExpiration(token).getTime());
         } catch (Exception ignored) {}
         if (pseudoJti != null && refreshTokenService.isAccessTokenBlacklisted(pseudoJti)) {
-            sendErrorResponse(response, HttpStatus.FORBIDDEN, "Token is revoked");
+//            sendErrorResponse(response, HttpStatus.FORBIDDEN, "Token không hợp lệ hoặc đã hết hạn!");
+            sendErrorResponse(response, HttpStatus.FORBIDDEN, "Token đã bị thu hồi!");
             return;
         }
 

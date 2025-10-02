@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class CacheService {
-    @Value("$spring.data.redis.time-to-live")
+    @Value("${spring.data.redis.time-to-live}")
     private Long redisTTL = 5*60*1000L;
 
     @Autowired

@@ -34,6 +34,7 @@ public class LoginController {
     public ResponseEntity<BaseResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
         String jwtToken = "";
         Long expTime = (long) 24*60*60; // 1day
+
         // If client sent an existing access token, deny if it is blacklisted
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -64,6 +65,7 @@ public class LoginController {
         } else {
             throw new UsernameNotFoundException("Invalid user request !");
         }
+
         BaseResponse baseResponse = new BaseResponse();
         SecurityContext.setCurrentToken(jwtToken);
         AuthenticateResponse authenticateResponse = new AuthenticateResponse();
@@ -90,9 +92,9 @@ public class LoginController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<BaseResponse> logout(HttpServletRequest req) {
+    public ResponseEntity<BaseResponse> logout(HttpServletRequest req, HttpServletResponse res) {
         BaseResponse baseResponse = new BaseResponse();
-        accountService.logout(req);
+        accountService.logout(req, res);
         baseResponse.setError_code("0");
         baseResponse.setMessage("Logout success!");
 

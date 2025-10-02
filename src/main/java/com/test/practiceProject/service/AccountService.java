@@ -3,12 +3,15 @@ package com.test.practiceProject.service;
 import com.test.practiceProject.dto.LoginRequest;
 import com.test.practiceProject.entity.LoginEntity;
 import com.test.practiceProject.error.BadRequestException;
+import com.test.practiceProject.error.ForbiddenException;
 import com.test.practiceProject.repository.AccountRepository;
 import com.test.practiceProject.config.auth.CustomUserDetails;
 import com.test.practiceProject.config.auth.JwtTokenProvider;
 import com.test.practiceProject.config.auth.SecurityContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +39,12 @@ public class AccountService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
+    @Autowired
+    private JwtTokenProvider tokenProvider;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -87,15 +96,18 @@ public class AccountService implements UserDetailsService {
     public Authentication authenticate(LoginRequest authentication) throws AuthenticationException {
         String username = authentication.getUsername();
         String password = authentication.getPassword();
+
         Optional<LoginEntity> acc = Optional.ofNullable(accountRepository.findByUsername(username));
         if (acc.isEmpty()) {
             HttpStatus status = HttpStatus.NOT_FOUND;
             throw new BadRequestException("Tài khoản không tồn tại.", status);
         }
+
         if (acc.get().getNumberFailures() != null &&  acc.get().getNumberFailures() > 5) {
             HttpStatus status = HttpStatus.FORBIDDEN;
             throw new BadRequestException("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị.", status);
         }
+
         boolean result = passwordEncoder.matches(password, acc.get().getPassword());
         if (!result) {
             if (acc.get().getNumberFailures() == null) acc.get().setNumberFailures(0);
@@ -104,20 +116,60 @@ public class AccountService implements UserDetailsService {
             HttpStatus status = HttpStatus.BAD_REQUEST;
             throw new BadRequestException("Thông tìn tài khoản, mật khẩu không chính xác", status);
         }
+
         List<GrantedAuthority> grantedAuths = new ArrayList<>();
         grantedAuths.add(new SimpleGrantedAuthority(acc.get().getRole()));
         return new UsernamePasswordAuthenticationToken(username, null, grantedAuths);
     }
 
-    public void logout(HttpServletRequest request) {
-       String token = JwtTokenProvider.getTokenFromRequest(request);
-       if (token != null) {
-           String username = JwtTokenProvider.extractUsername(token);
-           if (Objects.equals(username, SecurityContextHolder.getContext().getAuthentication().getName())) {
-                SecurityContext.clear();
-                new SecurityContextLogoutHandler().logout(request, null, null);
-           }
-       }
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        String token = JwtTokenProvider.getTokenFromRequest(request);
+        if (token == null) {
+            throw new ForbiddenException("Token đã hết hạn hoặc không hợp lệ!");
+        }
+
+        // Validate token not expired and belongs to current user
+        String usernameFromToken;
+        long expMillis;
+        try {
+            usernameFromToken = JwtTokenProvider.extractUsername(token);
+            expMillis = tokenProvider.extractExpiration(token).getTime();
+        } catch (Exception e) {
+            throw new ForbiddenException("Token đã hết hạn hoặc không hợp lệ!");
+        }
+
+        if (SecurityContextHolder.getContext().getAuthentication() == null
+                || !Objects.equals(usernameFromToken, SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new ForbiddenException("Bạn không có quyền thực hiện thao tác này!");
+        }
+
+        long remainingSeconds = Math.max(0, (expMillis - System.currentTimeMillis()) / 1000);
+        if (remainingSeconds <= 0) {
+            throw new ForbiddenException("Token đã hết hạn hoặc không hợp lệ!");
+        }
+
+        // Blacklist current access token in Redis using pseudo-jti (expiration time)
+        String pseudoJti = String.valueOf(expMillis);
+        refreshTokenService.blacklistAccessToken(pseudoJti, remainingSeconds);
+
+        // Revoke refresh token from Redis and clear cookies
+        if (request.getCookies() != null) {
+            for (Cookie c : request.getCookies()) {
+                if ("refresh_token".equals(c.getName())) {
+                    refreshTokenService.revokeRefreshToken(c.getValue());
+                }
+            }
+        }
+
+        Cookie clearRefresh = new Cookie("refresh_token", "");
+        clearRefresh.setHttpOnly(true);
+        clearRefresh.setPath("/");
+        clearRefresh.setMaxAge(0);
+        response.addCookie(clearRefresh);
+
+        // Clear security context and perform logout
+        SecurityContext.clear();
+        new SecurityContextLogoutHandler().logout(request, null, null);
     }
 
     public void deleteUser() {

@@ -1,6 +1,7 @@
-package com.test.practiceProject.config;
+package com.test.practiceProject.config.redis;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,16 +21,23 @@ import java.time.Duration;
 
 @Configuration
 @EnableCaching
+@EnableConfigurationProperties(RedisProperties.class)
 public class RedisConfig {
-    @Value("$spring.data.redis.time-to-live")
-    private Long redisTTL = 5*60*1000L;
+    //    @Value("${spring.data.redis.time-to-live}")
+//    private Long redisTTL = 5*60*1000L;
+    private final RedisProperties redisProperties;
+
+    public RedisConfig(RedisProperties redisProperties) {
+        this.redisProperties = redisProperties;
+    }
 
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory factory) {
         return RedisCacheManager.builder(factory)
             .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig()
 //                .entryTtl(Duration.ofMinutes(5))) // TTL mặc định 5 phút
-                .entryTtl(Duration.ofMillis(redisTTL)))
+//                .entryTtl(Duration.ofMillis(redisTTL)))
+                .entryTtl(Duration.ofMillis(redisProperties.getTimeToLive())))
             .build();
     }
 }
