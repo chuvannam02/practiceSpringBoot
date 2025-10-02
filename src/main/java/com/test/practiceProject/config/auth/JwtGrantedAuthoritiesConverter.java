@@ -8,7 +8,7 @@ package com.test.practiceProject.config.auth;
  * @Time: 4:43 PM
  */
 
-import com.test.practiceProject.Repository.Angular.RoleMenuRepository;
+import com.test.practiceProject.repository.Angular.RoleMenuRepository;
 import io.jsonwebtoken.Claims;
 import java.util.Collections;
 import java.util.List;

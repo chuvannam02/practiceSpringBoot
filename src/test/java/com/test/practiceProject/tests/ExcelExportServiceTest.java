@@ -1,7 +1,7 @@
 package com.test.practiceProject.tests;
 
-import com.test.practiceProject.DTO.UserData;
-import com.test.practiceProject.Service.ExportService;
+import com.test.practiceProject.dto.UserData;
+import com.test.practiceProject.service.ExportService;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

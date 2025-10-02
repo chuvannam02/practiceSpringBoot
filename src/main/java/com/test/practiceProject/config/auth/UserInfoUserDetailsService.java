@@ -1,7 +1,7 @@
 package com.test.practiceProject.config.auth;
 
-import com.test.practiceProject.Entity.LoginEntity;
-import com.test.practiceProject.Repository.AccountRepository;
+import com.test.practiceProject.entity.LoginEntity;
+import com.test.practiceProject.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

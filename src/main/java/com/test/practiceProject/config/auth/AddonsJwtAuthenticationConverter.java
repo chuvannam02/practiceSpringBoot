@@ -1,6 +1,6 @@
 package com.test.practiceProject.config.auth;
 
-import com.test.practiceProject.Repository.Angular.RoleMenuRepository;
+import com.test.practiceProject.repository.Angular.RoleMenuRepository;
 import org.springframework.core.convert.converter.Converter;
 
 /**

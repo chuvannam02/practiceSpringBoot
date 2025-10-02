@@ -25,7 +25,7 @@ import java.util.Map;
 // Nhờ đó, chúng ta có thể đọc thông điệp từ properties file tùy theo cấu hình của ứng dụng
 // Trong phương thức interpolate, chúng ta cũng có thể thay thế các placeholder trong thông điệp lỗi bằng các giá trị tương ứng
 // Ví dụ: {NotBlank.field} -> {NotBlank.field} -> {NotBlank.username} -> {NotBlank.password} -> {NotBlank.email}
-// Để sử dụng custom message interpolator, chúng ta cần cấu hình trong file application.properties
+// Để sử dụng custom message interpolator, chúng ta cần cấu hình trong file application.yml
 // spring.mvc.messageCodesResolver=org.springframework.validation.DefaultMessageCodesResolver
 // spring.mvc.messageCodesResolverFormat=POSTFIX_ERROR_CODE
 // spring.mvc.validation.message.interpolator.enabled=true

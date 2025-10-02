@@ -1,6 +1,6 @@
 package com.test.practiceProject;
 
-import com.test.practiceProject.Request.LocalDatasource;
+import com.test.practiceProject.dto.request.LocalDatasource;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

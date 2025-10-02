@@ -1,6 +1,6 @@
 package com.test.practiceProject.config.auth;
 
-import com.test.practiceProject.Entity.LoginEntity;
+import com.test.practiceProject.entity.LoginEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;

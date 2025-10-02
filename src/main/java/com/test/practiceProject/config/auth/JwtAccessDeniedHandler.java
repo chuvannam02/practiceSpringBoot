@@ -1,6 +1,6 @@
 package com.test.practiceProject.config.auth;
 
-import com.test.practiceProject.Error.BadRequestException;
+import com.test.practiceProject.error.BadRequestException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

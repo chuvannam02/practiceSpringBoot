@@ -1,6 +1,6 @@
 package com.test.practiceProject.config;
 
-import com.test.practiceProject.Request.LocalDatasource;
+import com.test.practiceProject.dto.request.LocalDatasource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

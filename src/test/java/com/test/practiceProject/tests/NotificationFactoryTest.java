@@ -8,8 +8,8 @@ package com.test.practiceProject.tests;
  * @Time: 10:48 AM
  */
 
-import com.test.practiceProject.Service.factory.NotificationFactory;
-import com.test.practiceProject.Utils.Enums.NotificationType;
+import com.test.practiceProject.service.factory.NotificationFactory;
+import com.test.practiceProject.utils.Enums.NotificationType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
