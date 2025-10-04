@@ -8,6 +8,10 @@ import com.test.practiceProject.service.AccountService;
 import com.test.practiceProject.config.auth.JwtTokenProvider;
 import com.test.practiceProject.config.auth.SecurityContext;
 import com.test.practiceProject.service.RefreshTokenService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Login API", description = "Quản lý đăng nhập, đăng ký tài khoản, đăng xuất")
 public class LoginController {
     @Autowired
     private JwtTokenProvider tokenProvider;
@@ -30,10 +35,27 @@ public class LoginController {
     @Autowired
     private RefreshTokenService refreshTokenService;
 
+    @Operation(
+        summary = "Đăng nhập hệ thống",
+        description = "Xác thực username/password và trả về Access Token + Refresh Token"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Đăng nhập thành công"),
+        @ApiResponse(responseCode = "401", description = "Sai thông tin đăng nhập hoặc token không hợp lệ"),
+        @ApiResponse(responseCode = "403", description = "Token bị blacklist")
+    })
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<BaseResponse> authenticateUser(
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Thông tin đăng nhập gồm username và password",
+            required = true
+        )
+        @Valid @RequestBody LoginRequest loginRequest,
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) {
         String jwtToken = "";
-        Long expTime = (long) 24*60*60; // 1day
+        Long expTime = (long) 24 * 60 * 60; // 1day
 
         // If client sent an existing access token, deny if it is blacklisted
         String authHeader = request.getHeader("Authorization");
@@ -60,7 +82,7 @@ public class LoginController {
             cookie.setHttpOnly(true);
             cookie.setSecure(false);
             cookie.setPath("/");
-            cookie.setMaxAge(Math.toIntExact(14*24*60*60));
+            cookie.setMaxAge(Math.toIntExact(14 * 24 * 60 * 60));
             response.addCookie(cookie);
         } else {
             throw new UsernameNotFoundException("Invalid user request !");
@@ -77,20 +99,26 @@ public class LoginController {
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
+    @Operation(summary = "API test JWT", description = "Chỉ truy cập được khi có JWT hợp lệ")
+    @ApiResponse(responseCode = "200", description = "Trả về random message")
     // Api /api/random yêu cầu phải xác thực mới có thể request
     @GetMapping("/random")
-    public RandomStuff randomStuff(){
+    public RandomStuff randomStuff() {
         return new RandomStuff("JWT Hợp lệ mới có thể thấy được message này");
     }
 
+    @Operation(summary = "Tạo tài khoản mới", description = "Đăng ký tài khoản mới vào hệ thống")
+    @ApiResponse(responseCode = "200", description = "Tạo thành công")
     @PostMapping("/create")
     public ResponseEntity<BaseResponse> createNewAccount(@Valid @RequestBody LoginRequest info) {
         BaseResponse baseResponse = new BaseResponse();
         accountService.createUser(info);
 
-        return new ResponseEntity<BaseResponse>(baseResponse, HttpStatus.OK);
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
+    @Operation(summary = "Đăng xuất", description = "Xóa token, hủy phiên đăng nhập")
+    @ApiResponse(responseCode = "200", description = "Đăng xuất thành công")
     @PostMapping("/logout")
     public ResponseEntity<BaseResponse> logout(HttpServletRequest req, HttpServletResponse res) {
         BaseResponse baseResponse = new BaseResponse();
@@ -101,6 +129,14 @@ public class LoginController {
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
+    @Operation(
+        summary ="Làm mới Access Token",
+        description ="Dùng refresh token (lưu trong cookie) để lấy access token mới"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Làm mới token thành công"),
+        @ApiResponse(responseCode = "401", description = "Refresh token không hợp lệ hoặc thiếu")
+    })
     @PostMapping("/refresh")
     public ResponseEntity<BaseResponse> refresh(HttpServletRequest request) {
         BaseResponse baseResponse = new BaseResponse();
@@ -109,7 +145,8 @@ public class LoginController {
         try {
             // reuse signature+issuedAt as a pseudo-jti (or embed jti later)
             oldJti = String.valueOf(tokenProvider.extractExpiration(accessToken).getTime());
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         String refreshId = null;
         if (request.getCookies() != null) {
@@ -136,12 +173,12 @@ public class LoginController {
         String newAccess = tokenProvider.generateToken(subject);
         AuthenticateResponse authenticateResponse = new AuthenticateResponse();
         authenticateResponse.setAccess_token(newAccess);
-        authenticateResponse.setExp(24*60*60L);
+        authenticateResponse.setExp(24 * 60 * 60L);
         baseResponse.setError_code("0");
         baseResponse.setObject(authenticateResponse);
 
         if (oldJti != null) {
-            long remain = Math.max(1, (tokenProvider.extractExpiration(accessToken).getTime() - System.currentTimeMillis())/1000);
+            long remain = Math.max(1, (tokenProvider.extractExpiration(accessToken).getTime() - System.currentTimeMillis()) / 1000);
             refreshTokenService.blacklistAccessToken(oldJti, remain);
         }
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);

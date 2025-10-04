@@ -1,4 +1,4 @@
-package com.test.practiceProject.config.type;
+package com.test.practiceProject.utils.Enums;
 
 public interface EnumText {
     String getText();
