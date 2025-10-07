@@ -1,6 +1,6 @@
 package com.test.practiceProject.dto;
 
-import com.test.practiceProject.utils.Validations.PasswordConstrain;
+import com.test.practiceProject.utils.validation.PasswordConstrain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.Getter;

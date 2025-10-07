@@ -1,4 +1,4 @@
-package com.test.practiceProject.utils.Validations.groups;
+package com.test.practiceProject.utils.validation.groups;
 
 /**
  * @Project: practiceProject
@@ -8,5 +8,5 @@ package com.test.practiceProject.utils.Validations.groups;
  * @Time: 12:04 PM
  */
 
-public interface Create {
+public interface Update {
 }

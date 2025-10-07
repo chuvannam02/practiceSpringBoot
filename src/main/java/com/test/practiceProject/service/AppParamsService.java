@@ -2,11 +2,11 @@ package com.test.practiceProject.service;
 
 import com.test.practiceProject.entity.AppParams;
 import com.test.practiceProject.error.BadRequestException;
-import com.test.practiceProject.utils.Records.RecordPerson;
+import com.test.practiceProject.utils.record.RecordPerson;
 import com.test.practiceProject.repository.AppParamsRepository;
 import com.test.practiceProject.dto.request.AppParamsRequest;
-import com.test.practiceProject.utils.Enums.DayOfWeek;
-import com.test.practiceProject.utils.Enums.Season;
+import com.test.practiceProject.utils.enums.DayOfWeek;
+import com.test.practiceProject.utils.enums.Season;
 import com.test.practiceProject.utils.NoNullsList;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;

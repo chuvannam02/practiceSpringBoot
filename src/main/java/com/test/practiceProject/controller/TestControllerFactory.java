@@ -1,7 +1,7 @@
 package com.test.practiceProject.controller;
 
 import com.test.practiceProject.service.factory.NotificationFactoryProvider;
-import com.test.practiceProject.utils.Enums.NotificationType;
+import com.test.practiceProject.utils.enums.NotificationType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

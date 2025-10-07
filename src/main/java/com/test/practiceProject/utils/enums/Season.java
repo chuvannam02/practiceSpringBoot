@@ -1,4 +1,4 @@
-package com.test.practiceProject.utils.Enums;
+package com.test.practiceProject.utils.enums;
 
 /**
  * @Project: practiceProject

@@ -1,4 +1,4 @@
-package com.test.practiceProject.utils.Records;
+package com.test.practiceProject.utils.record;
 
 import lombok.Builder;
 

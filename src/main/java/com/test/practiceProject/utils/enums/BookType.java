@@ -1,4 +1,4 @@
-package com.test.practiceProject.utils.Enums;
+package com.test.practiceProject.utils.enums;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

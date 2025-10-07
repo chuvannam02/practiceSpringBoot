@@ -1,6 +1,6 @@
 package com.test.practiceProject.service;
 
-import com.test.practiceProject.utils.Enums.NotificationType;
+import com.test.practiceProject.utils.enums.NotificationType;
 
 /**
  * @Project: practiceProject

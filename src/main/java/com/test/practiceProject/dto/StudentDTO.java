@@ -1,7 +1,7 @@
 package com.test.practiceProject.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.test.practiceProject.utils.Validations.NotBlankWithField;
+import com.test.practiceProject.utils.validation.NotBlankWithField;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

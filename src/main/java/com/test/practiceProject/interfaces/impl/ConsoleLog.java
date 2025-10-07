@@ -1,7 +1,7 @@
 package com.test.practiceProject.interfaces.impl;
 
 import com.test.practiceProject.interfaces.Loggable;
-import com.test.practiceProject.utils.Enums.Severity;
+import com.test.practiceProject.utils.enums.Severity;
 import lombok.RequiredArgsConstructor;
 
 /**

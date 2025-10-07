@@ -1,4 +1,4 @@
-package com.test.practiceProject.utils.SchedulingTasks;
+package com.test.practiceProject.utils.scheduling_task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

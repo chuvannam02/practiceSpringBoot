@@ -1,7 +1,7 @@
 package com.test.practiceProject.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.test.practiceProject.utils.Enums.BookType;
+import com.test.practiceProject.utils.enums.BookType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;

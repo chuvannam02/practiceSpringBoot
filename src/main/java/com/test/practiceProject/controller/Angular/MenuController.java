@@ -1,8 +1,8 @@
 package com.test.practiceProject.controller.Angular;
 
 import com.test.practiceProject.dto.in.MenuDTO;
-import com.test.practiceProject.utils.Validations.groups.Create;
-import com.test.practiceProject.utils.Validations.groups.Update;
+import com.test.practiceProject.utils.validation.groups.Create;
+import com.test.practiceProject.utils.validation.groups.Update;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,4 +1,4 @@
-package com.test.practiceProject.utils.Validations.payloads;
+package com.test.practiceProject.utils.validation.payloads;
 
 import jakarta.validation.Payload;
 

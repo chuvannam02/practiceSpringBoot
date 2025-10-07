@@ -1,7 +1,7 @@
 package com.test.practiceProject.service.factory;
 
 import com.test.practiceProject.service.NotificationService;
-import com.test.practiceProject.utils.Enums.NotificationType;
+import com.test.practiceProject.utils.enums.NotificationType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

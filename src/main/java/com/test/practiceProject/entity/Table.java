@@ -1,6 +1,6 @@
 package com.test.practiceProject.entity;
 
-import com.test.practiceProject.utils.Enums.DataType;
+import com.test.practiceProject.utils.enums.DataType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

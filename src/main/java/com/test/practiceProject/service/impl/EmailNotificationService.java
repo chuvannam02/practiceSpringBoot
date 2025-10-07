@@ -1,7 +1,7 @@
 package com.test.practiceProject.service.impl;
 
 import com.test.practiceProject.service.NotificationService;
-import com.test.practiceProject.utils.Enums.NotificationType;
+import com.test.practiceProject.utils.enums.NotificationType;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

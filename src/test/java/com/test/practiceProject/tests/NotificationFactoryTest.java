@@ -9,7 +9,7 @@ package com.test.practiceProject.tests;
  */
 
 import com.test.practiceProject.service.factory.NotificationFactory;
-import com.test.practiceProject.utils.Enums.NotificationType;
+import com.test.practiceProject.utils.enums.NotificationType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

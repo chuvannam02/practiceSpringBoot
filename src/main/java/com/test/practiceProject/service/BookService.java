@@ -7,7 +7,7 @@ import com.test.practiceProject.error.BadRequestException;
 import com.test.practiceProject.repository.BookRepository;
 import com.test.practiceProject.dto.response.PageResponse;
 import com.test.practiceProject.utils.CommonUtils;
-import com.test.practiceProject.utils.Enums.BookType;
+import com.test.practiceProject.utils.enums.BookType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;

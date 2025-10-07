@@ -12,7 +12,7 @@ import com.test.practiceProject.service.NotificationService;
 import com.test.practiceProject.service.impl.EmailNotificationService;
 import com.test.practiceProject.service.impl.PushNotificationService;
 import com.test.practiceProject.service.impl.SmsNotificationService;
-import com.test.practiceProject.utils.Enums.NotificationType;
+import com.test.practiceProject.utils.enums.NotificationType;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Component;
 

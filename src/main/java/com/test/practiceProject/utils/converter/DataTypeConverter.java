@@ -1,6 +1,6 @@
 package com.test.practiceProject.utils.converter;
 
-import com.test.practiceProject.utils.Enums.DataType;
+import com.test.practiceProject.utils.enums.DataType;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.extern.slf4j.Slf4j;

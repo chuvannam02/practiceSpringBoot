@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.practiceProject.dto.in.TableCustomDTO;
 import com.test.practiceProject.entity.Table;
 import com.test.practiceProject.repository.TableCustomRepository;
-import com.test.practiceProject.utils.Enums.DataType;
+import com.test.practiceProject.utils.enums.DataType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

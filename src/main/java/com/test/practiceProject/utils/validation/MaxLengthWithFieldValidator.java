@@ -1,4 +1,4 @@
-package com.test.practiceProject.utils.Validations;
+package com.test.practiceProject.utils.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

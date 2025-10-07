@@ -1,9 +1,9 @@
 package com.test.practiceProject.dto.in;
 
 import com.test.practiceProject.dto.base.SortDTO;
-import com.test.practiceProject.utils.Validations.MaxLengthWithField;
-import com.test.practiceProject.utils.Validations.groups.Create;
-import com.test.practiceProject.utils.Validations.payloads.Severity;
+import com.test.practiceProject.utils.validation.MaxLengthWithField;
+import com.test.practiceProject.utils.validation.groups.Create;
+import com.test.practiceProject.utils.validation.payloads.Severity;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
