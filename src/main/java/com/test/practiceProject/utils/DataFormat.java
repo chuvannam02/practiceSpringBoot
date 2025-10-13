@@ -12,4 +12,12 @@ public class DataFormat {
     public static String formatString(String str) {
         return str.trim().replaceAll("\\s+", " ");
     }
+
+    public static String trim(String str) {
+        if (!str.isBlank()) {
+            return str.trim();
+        }
+
+        return null;
+    }
 }

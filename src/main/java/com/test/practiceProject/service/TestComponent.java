@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TestComponent {
-    private AnimalInterface animalInterface;
-
-    public TestComponent(@Qualifier("cat") AnimalInterface animalInterface) {
-        this.animalInterface = animalInterface;
-    }
+//    private AnimalInterface animalInterface;
+//
+//    public TestComponent(@Qualifier("cat") AnimalInterface animalInterface) {
+//        this.animalInterface = animalInterface;
+//    }
 }

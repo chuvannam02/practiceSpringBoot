@@ -3,10 +3,15 @@ spring:
         name: practiceProject
     profiles:
         active: local
+#        Giới hạn kích thước file upload
+    servlet:
+        multipart:
+            max-file-size: 20MB
+            max-request-size: 20MB
 # Hibernate
     jpa:
         hibernate:
-            ddl-auto: none
+            ddl-auto: update
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.MySQL8Dialect
