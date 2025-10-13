@@ -56,23 +56,23 @@ public class LoginController {
     ) {
         String jwtToken = "";
         Long expTime = (long) 24 * 60 * 60; // 1day
-
-        // If client sent an existing access token, deny if it is blacklisted
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            try {
-                String pseudoJti = String.valueOf(tokenProvider.extractExpiration(token).getTime());
-                if (refreshTokenService.isAccessTokenBlacklisted(pseudoJti)) {
-                    BaseResponse forbidden = new BaseResponse();
-                    forbidden.setError_code("403");
-                    forbidden.setMessage("Token is blacklisted");
-                    return new ResponseEntity<>(forbidden, HttpStatus.FORBIDDEN);
-                }
-            } catch (Exception ignored) {
-                // If token parsing fails, proceed with normal login flow
-            }
-        }
+//
+//        // If client sent an existing access token, deny if it is blacklisted
+//        String authHeader = request.getHeader("Authorization");
+//        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+//            String token = authHeader.substring(7);
+//            try {
+//                String pseudoJti = String.valueOf(tokenProvider.extractExpiration(token).getTime());
+//                if (refreshTokenService.isAccessTokenBlacklisted(pseudoJti)) {
+//                    BaseResponse forbidden = new BaseResponse();
+//                    forbidden.setError_code("403");
+//                    forbidden.setMessage("Token is blacklisted");
+//                    return new ResponseEntity<>(forbidden, HttpStatus.FORBIDDEN);
+//                }
+//            } catch (Exception ignored) {
+//                // If token parsing fails, proceed with normal login flow
+//            }
+//        }
 
         Authentication authentication = accountService.authenticate(loginRequest);
         if (authentication.isAuthenticated()) {

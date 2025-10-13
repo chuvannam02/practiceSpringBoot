@@ -52,9 +52,9 @@ public class ApiSecurityConfig {
                     .url("https://mycompany.com"))
                 .license(new License().name("License of API").url("https://mycompany.com/license")))
             .servers(List.of(
-                new Server().url("https://api-dev.mycompany.com").description("Development Server"),
-                new Server().url("https://api-staging.mycompany.com").description("Staging Server"),
-                new Server().url("https://api.mycompany.com").description("Production Server")
+                new Server().url("http://localhost:8080").description("Development Server"),
+                new Server().url("http://localhost:8080").description("Staging Server"),
+                new Server().url("http://localhost:8080").description("Production Server")
             ));
     }
 
