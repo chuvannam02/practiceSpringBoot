@@ -49,8 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         log.info("Request URI: {}", requestURI);
-
-        // Skip JWT validation for excluded URLs
+            // Skip JWT validation for excluded URLs
         if (isExcludedUrl(requestURI)) {
             filterChain.doFilter(request, response);
             return;
