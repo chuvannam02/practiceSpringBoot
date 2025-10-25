@@ -231,3 +231,154 @@ public class UserService {
     }  
 }  
 👉 Cache users::id sẽ tự động expire sau 5 phút
+
+=============================================================================================================================================
+
+# 📧 Gửi Email Tùy Chỉnh với Thymeleaf và Java Mail Sender
+
+## 17.5.1. Cài đặt và cấu hình Java Mail Sender
+
+### 🧩 17.5.1.1. Bước 1: Thêm dependencies cần thiết vào `pom.xml`
+
+Thêm các dependency sau vào bên trong cặp thẻ `<dependencies>` trong file `pom.xml`:
+
+```xml
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-mail</artifactId>
+</dependency>
+
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+```
+
+⚙️ 17.5.1.2. Bước 2: Cấu hình email trong file application.yml hoặc .properties
+
+Mở file application.yml hoặc .properties trong thư mục resources (root project) và thêm cấu hình mail như sau:
+
+```java
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: email@gmail.com   # (email của bạn)
+    password: xxxx xxxx xxxx xxxx  # (App password, KHÔNG phải mật khẩu Gmail thật)
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+```
+
+🛠️ 17.5.1.3. Bước 3: Tạo file EmailConfig.java và cấu hình Java Mail Sender truyền env từ application.yml
+
+Tạo file EmailConfig.java để cấu hình Thymeleaf và tạo thư mục email-templates trong src/main/resources để chứa các template email.
+
+```java
+@Configuration
+public class EmailConfig {
+ @Bean
+    public TemplateEngine emailTemplateEngine() {
+        ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
+        resolver.setPrefix("email-templates/");
+        resolver.setSuffix(".html");
+        resolver.setTemplateMode("HTML");
+        resolver.setCharacterEncoding("UTF-8");
+        resolver.setCacheable(false);
+
+        SpringTemplateEngine engine = new SpringTemplateEngine();
+        engine.setTemplateResolver(resolver);
+        return engine;
+    }
+}
+```
+Giải thích:
+
+Java8TimeDialect: là extension giúp Thymeleaf hỗ trợ các kiểu dữ liệu ngày tháng như LocalDate, LocalDateTime, LocalTime thông qua biến #temporals.
+
+Ví dụ sử dụng:
+```html
+<span th:text="${#temporals.format(reportDate, 'yyyy-MM-dd')}"></span>
+```
+Để dùng được Java8TimeDialect, thêm dependency sau vào pom.xml:
+```xml
+<dependency>
+    <groupId>com.google.code.gson</groupId>
+    <artifactId>gson</artifactId>
+    <version>2.8.2</version>
+</dependency>
+```
+
+🔒 17.5.2. Cấu hình thông tin xác thực SMTP với Gmail
+
+Ứng dụng cần có khả năng gửi email cho người dùng — ví dụ như:
+
+- Reset mật khẩu
+
+- Xác thực tài khoản
+
+- Gửi thông báo quan trọng
+
+Vì vậy, ta cần thiết lập SMTP server để gửi email thông qua Gmail.
+
+17.5.2.1. Bước 1: Đăng nhập tài khoản Gmail
+
+Truy cập https://www.gmail.com, đăng nhập bằng tài khoản Gmail của bạn (không cần gõ phần @gmail.com).
+
+🔐 17.5.2.2. Bước 2: Bật xác thực 2 bước (Two-Factor Authentication)
+
+Click vào avatar cá nhân góc trên phải → “Quản lý Tài khoản Google của bạn”
+Hệ thống sẽ điều hướng tới:
+👉 https://myaccount.google.com/
+
+Chọn menu “Bảo mật” → “Xác minh 2 bước”
+Bật tính năng này (nếu chưa bật).
+
+🔑 17.5.2.3. Bước 3: Tạo mật khẩu ứng dụng (App Password)
+
+Trong mục Bảo mật (Security) → click “Xác minh 2 bước (2-Step verification)”.
+Sau đó cuộn xuống mục “Mật khẩu ứng dụng (App passwords)”.
+
+Nhập tên ứng dụng (ví dụ: SpringBootEmailService).
+
+Click Tạo (Generate).
+
+Hệ thống hiển thị 16 ký tự — sao chép và lưu lại cẩn thận.
+
+Ví dụ mật khẩu ứng dụng được tạo:
+```
+xxxx xxxx xxxx xxxx
+```
+
+⚠️ Lưu ý: Mật khẩu này chỉ hiển thị một lần duy nhất, không thể xem lại.
+
+⚡ 17.5.2.4. Bước 4: Cấu hình SMTP cho Gmail trong application.yml
+
+Thông tin cấu hình Gmail SMTP:
+
+Thuộc tính	Giá trị
+Máy chủ SMTP	smtp.gmail.com
+Cổng (TLS)	587
+Cổng (SSL)	465
+Username	Địa chỉ Gmail của bạn
+Password	App Password (16 ký tự)
+Encryption	TLS hoặc SSL tương ứng
+
+Ví dụ cấu hình:
+```yml
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your.email@gmail.com
+    password: pgxmbfajgcxwxvjp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+```
