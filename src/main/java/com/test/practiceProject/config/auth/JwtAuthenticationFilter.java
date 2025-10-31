@@ -24,13 +24,14 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final List<String> EXCLUDE_URLS = List.of(
-            "/api/create",
-            "/api/login",
-            "/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-ui.html",
-            "/v1/product/**",
-            "/export/**"
+        "/api/create",
+        "/api/login",
+        "/api-docs/**",
+        "/swagger-ui/**",
+        "/swagger-ui.html",
+        "/v1/product/**",
+        "/export/**",
+        "/test/**"
     );
     @Autowired
     private JwtTokenProvider tokenProvider;
@@ -49,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         log.info("Request URI: {}", requestURI);
-            // Skip JWT validation for excluded URLs
+        // Skip JWT validation for excluded URLs
         if (isExcludedUrl(requestURI)) {
             filterChain.doFilter(request, response);
             return;
@@ -65,7 +66,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String pseudoJti = null;
         try {
             pseudoJti = String.valueOf(tokenProvider.extractExpiration(token).getTime());
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         if (pseudoJti != null && refreshTokenService.isAccessTokenBlacklisted(pseudoJti)) {
 //            sendErrorResponse(response, HttpStatus.FORBIDDEN, "Token không hợp lệ hoặc đã hết hạn!");
             sendErrorResponse(response, HttpStatus.FORBIDDEN, "Token đã bị thu hồi!");

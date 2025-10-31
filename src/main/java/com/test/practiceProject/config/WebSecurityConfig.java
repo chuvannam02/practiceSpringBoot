@@ -49,7 +49,8 @@ public class WebSecurityConfig {
         "/v1/product/**",
         "/greeting/**",
         "/actuator/**",
-        "/export/**"
+        "/export/**",
+        "/test/**"
     };
 
     @Bean

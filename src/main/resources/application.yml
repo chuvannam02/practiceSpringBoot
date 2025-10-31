@@ -8,6 +8,60 @@ spring:
         multipart:
             max-file-size: 20MB
             max-request-size: 20MB
+    # Kafka
+    kafka:
+#        Địa chỉ Kafka broker
+#        bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9093}
+        bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+
+        # Security config — cho phép bật/tắt động
+        security:
+#            Bật SASL_PLAINTEXT hoặc PLAINTEXT
+#            protocol: ${KAFKA_SECURITY_PROTOCOL:SASL_PLAINTEXT}
+            protocol: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
+
+#        properties:
+#            sasl:
+#                mechanism: ${KAFKA_SASL_MECHANISM:PLAIN}
+#                jaas:
+##                    Auth config
+#                    config: >
+#                        org.apache.kafka.common.security.plain.PlainLoginModule required
+#                        username="${KAFKA_USERNAME:admin}"
+#                        password="${KAFKA_PASSWORD:admin-secret}";
+
+        producer:
+            key-serializer: ${KAFKA_PRODUCER_KEY_SERIALIZER:org.apache.kafka.common.serialization.StringSerializer}
+            value-serializer: ${KAFKA_PRODUCER_VALUE_SERIALIZER:org.springframework.kafka.support.serializer.JsonSerializer}
+#            Tối ưu hiệu năng gửi message
+            # Tự retry khi lỗi tạm thời
+            retries: ${KAFKA_PRODUCER_RETRIES:3}
+            # Đảm bảo message được ghi bởi tất cả broker replicas
+            acks: ${KAFKA_PRODUCER_ACKS:all}
+            # Gom message lại trong 10ms trước khi gửi (giảm overhead network)
+            linger-ms: ${KAFKA_PRODUCER_LINGER:10}
+
+        consumer:
+#            Điều chỉnh batch size và group
+            group-id: ${KAFKA_CONSUMER_GROUP:default-group}
+            # Chủ động commit offset khi xử lý xong
+            enable-auto-commit: ${KAFKA_CONSUMER_AUTO_COMMIT:false}
+            # Đọc từ đầu nếu chưa có offset
+            auto-offset-reset: ${KAFKA_CONSUMER_AUTO_OFFSET_RESET:earliest}
+            # Mỗi lần poll 100 message
+            max-poll-records: ${KAFKA_CONSUMER_MAX_POLL_RECORDS:100}
+            key-deserializer: ${KAFKA_CONSUMER_KEY_DESERIALIZER:org.apache.kafka.common.serialization.StringDeserializer}
+            value-deserializer: ${KAFKA_CONSUMER_VALUE_DESERIALIZER:org.springframework.kafka.support.serializer.JsonDeserializer}
+
+        listener:
+#            Điều chỉnh commit và luồng xử lý song song
+            type: batch
+            # Tự commit khi bạn gọi `ack.acknowledge()`
+            ack-mode: ${KAFKA_LISTENER_ACK_MODE:MANUAL_IMMEDIATE}
+            # 3 luồng consumer song song
+            concurrency: ${KAFKA_LISTENER_CONCURRENCY:3}
+            # Mỗi 3 giây poll lại
+            poll-timeout: ${KAFKA_LISTENER_POLL_TIMEOUT:3000}
 # Hibernate
     jpa:
         hibernate:
