@@ -10,7 +10,7 @@ WORKDIR /usr/src/project
 
 # Build the project and skip tests
 # ⚙️ Chạy lệnh Maven để build project và bỏ qua test để giảm thời gian.
-RUN mvn clean package -DskipTests
+RUN mvn clean package -Dmaven.test.skip=true
 
 # Unpack the JAR and analyze module dependencies
 # 📦 Giải nén file JAR sau khi build xong. Mục đích là để lấy các class và thư viện ra phục vụ cho phân tích dependency ở bước tiếp theo.
