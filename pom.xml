@@ -216,7 +216,7 @@
      <name>GitHub OWNER Apache Maven Packages</name>
      <url>https://maven.pkg.github.com/chuvannam02/practiceSpringBoot</url>
    </repository>
-</distributionManageme
+</distributionManagement>
 
     <build>
         <plugins>
