@@ -21,7 +21,7 @@ pipeline {
     stages {
         stage('Checkout Source') {
             steps {
-                git branch: 'main', url: ${GIT_SOURCE_APP}
+                git branch: 'main', url: "${GIT_SOURCE_APP}"
             }
         }
 
