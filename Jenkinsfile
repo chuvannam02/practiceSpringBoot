@@ -63,16 +63,23 @@ pipeline {
         }
 
         stage('SonarCloud Analysis') {
+            when {
+                expression {
+                    // Chỉ chạy nếu Maven có sẵn trong Jenkins (không build bằng Docker)
+                    sh(script: "command -v mvn >/dev/null 2>&1", returnStatus: true) == 0
+                }
+            }
             steps {
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
                     echo "🔍 Running SonarCloud analysis..."
-                      withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                         sh """
-                          mvn org.sonarsource.scanner.maven:sonar-maven-plugin:4.0.0.4121:sonar \
-                          -Dsonar.organization=${SONAR_ORG} \
-                          -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                          -Dsonar.host.url=${SONAR_HOST_URL} \
-                          -Dsonar.token=${SONAR_TOKEN}
+                            mvn clean verify sonar:sonar \
+                              -Dsonar.organization=${SONAR_ORG} \
+                              -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                              -Dsonar.host.url=${SONAR_HOST_URL} \
+                              -Dsonar.token=${SONAR_TOKEN} \
+                              -Dsonar.java.binaries=target/classes
                         """
                     }
                 }
