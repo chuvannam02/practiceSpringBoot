@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         REGISTRY_URL = 'http://localhost:9000'
-        // IMAGE_NAME = 'my-app'
         GIT_DEPLOY_REPO = 'https://github.com/chuvannam02/CI-CD.git'
         GIT_SOURCE_APP = 'https://github.com/chuvannam02/practiceSpringBoot.git'
 
@@ -14,37 +13,54 @@ pipeline {
 
         SLACK_CHANNEL = '#ci-cd'
 
-        NEXUS_USER = credentials('nexus-user')   // tạo trong Jenkins
+        NEXUS_USER = credentials('nexus-user')
         NEXUS_PASS = credentials('nexus-pass')
     }
 
+    options {
+        ansiColor('xterm')    // 🌈 màu sắc log đẹp hơn
+        timestamps()          // ⏰ hiển thị thời gian mỗi log line
+        buildDiscarder(logRotator(numToKeepStr: '10'))  // giữ 10 build gần nhất
+        timeout(time: 30, unit: 'MINUTES')
+    }
+
     stages {
+        stage('Init') {
+            steps {
+                script {
+                    // Ghi nhận thời điểm bắt đầu
+                    env.PIPELINE_START = System.currentTimeMillis()
+                    echo "🚀 Pipeline started at ${new Date(env.PIPELINE_START.toLong())}"
+                }
+            }
+        }
+
         stage('Checkout Source') {
             steps {
+                echo "📦 Checking out source from ${GIT_SOURCE_APP}"
                 git branch: 'main', url: "${GIT_SOURCE_APP}"
             }
         }
 
-         stage('Generate Image Tag') {
+        stage('Generate Image Tag') {
             steps {
                 script {
-                    env.IMAGE_TAG = sh(
-                        script: "date +'%Y%m%d-%H%M%S'",
-                        returnStdout: true
-                    ).trim()
-                    echo "Generated image tag: ${IMAGE_TAG}"
+                    env.IMAGE_TAG = sh(script: "date +'%Y%m%d-%H%M%S'", returnStdout: true).trim()
+                    echo "🏷️ Generated image tag: ${IMAGE_TAG}"
                 }
             }
         }
 
         stage('Build & Test') {
             steps {
+                echo "⚙️ Building Docker image..."
                 sh 'docker build -t my-app -f Dockerfile-prod .'
             }
         }
 
         stage('SonarCloud Analysis') {
             steps {
+                echo "🔍 Running SonarCloud analysis..."
                 sh """
                     mvn sonar:sonar \
                       -Dsonar.organization=${SONAR_ORG} \
@@ -57,6 +73,7 @@ pipeline {
 
         stage('Wait for Sonar Quality Gate') {
             steps {
+                echo "🕒 Waiting for Sonar Quality Gate result..."
                 timeout(time: 5, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
@@ -66,14 +83,17 @@ pipeline {
         stage('Build & Push Docker Image') {
             steps {
                 script {
-                    def IMAGE_TAG = "${BUILD_NUMBER}"
+                    echo "🐳 Building and pushing image to Nexus..."
+                    def imageName = "my-app"
+                    def imageFull = "${REGISTRY_URL}/${imageName}:${IMAGE_TAG}"
+
                     sh """
                         echo "${NEXUS_PASS}" | docker login ${REGISTRY_URL} -u "${NEXUS_USER}" --password-stdin
-                        docker build -t ${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG} .
-                        docker push ${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+                        docker build -t ${imageFull} .
+                        docker push ${imageFull}
                         docker logout ${REGISTRY_URL}
                     """
-                    env.IMAGE_TAG = IMAGE_TAG
+                    env.IMAGE_NAME = imageName
                 }
             }
         }
@@ -81,27 +101,39 @@ pipeline {
         stage('Update Deploy Repo') {
             steps {
                 script {
-                    sh '''
+                    echo "📤 Updating deploy repo with new image tag ${IMAGE_TAG}"
+                    sh """
                         rm -rf infra-deploy
-                        git clone ${GIT_DEPLOY_REPO}
+                        git clone ${GIT_DEPLOY_REPO} infra-deploy
                         cd infra-deploy/k8s/my-app
                         sed -i "s|image: .*|image: ${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}|g" deployment.yaml
                         git config user.email "jenkins@ci.local"
                         git config user.name "jenkins"
                         git commit -am "Update image tag to ${IMAGE_TAG}" || echo "No changes to commit"
                         git push origin main
-                    '''
+                    """
                 }
             }
         }
     }
 
     post {
-        success {
-            slackSend channel: "${SLACK_CHANNEL}", message: "✅ Build #${BUILD_NUMBER} succeeded. Image tag: ${IMAGE_TAG}"
+        always {
+            script {
+                def end = System.currentTimeMillis()
+                def duration = (end - env.PIPELINE_START.toLong()) / 1000
+                echo "⏱️ Pipeline finished in ${duration} seconds"
+            }
         }
+
+        success {
+            echo "✅ Build succeeded! Image: ${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
+            slackSend channel: "${SLACK_CHANNEL}", message: "✅ *Build #${BUILD_NUMBER}* succeeded in ${currentBuild.durationString}. Image tag: ${IMAGE_TAG}"
+        }
+
         failure {
-            slackSend channel: "${SLACK_CHANNEL}", message: "❌ Build #${BUILD_NUMBER} failed at stage: ${env.STAGE_NAME}"
+            echo "❌ Build failed at stage: ${env.STAGE_NAME}"
+            slackSend channel: "${SLACK_CHANNEL}", message: "❌ *Build #${BUILD_NUMBER}* failed at stage: ${env.STAGE_NAME}"
         }
     }
 }
