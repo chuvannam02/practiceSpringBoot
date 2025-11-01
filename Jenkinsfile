@@ -18,9 +18,8 @@ pipeline {
     }
 
     options {
-        ansiColor('xterm')    // 🌈 màu sắc log đẹp hơn
         timestamps()          // ⏰ hiển thị thời gian mỗi log line
-        buildDiscarder(logRotator(numToKeepStr: '10'))  // giữ 10 build gần nhất
+        buildDiscarder(logRotator(numToKeepStr: '10'))
         timeout(time: 30, unit: 'MINUTES')
     }
 
@@ -28,7 +27,6 @@ pipeline {
         stage('Init') {
             steps {
                 script {
-                    // Ghi nhận thời điểm bắt đầu
                     env.PIPELINE_START = System.currentTimeMillis()
                     echo "🚀 Pipeline started at ${new Date(env.PIPELINE_START.toLong())}"
                 }
@@ -37,81 +35,95 @@ pipeline {
 
         stage('Checkout Source') {
             steps {
-                echo "📦 Checking out source from ${GIT_SOURCE_APP}"
-                git branch: 'main', url: "${GIT_SOURCE_APP}"
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+                    echo "📦 Checking out source from ${GIT_SOURCE_APP}"
+                    git branch: 'main', url: "${GIT_SOURCE_APP}"
+                }
             }
         }
 
         stage('Generate Image Tag') {
             steps {
-                script {
-                    env.IMAGE_TAG = sh(script: "date +'%Y%m%d-%H%M%S'", returnStdout: true).trim()
-                    echo "🏷️ Generated image tag: ${IMAGE_TAG}"
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+                    script {
+                        env.IMAGE_TAG = sh(script: "date +'%Y%m%d-%H%M%S'", returnStdout: true).trim()
+                        echo "🏷️ Generated image tag: ${IMAGE_TAG}"
+                    }
                 }
             }
         }
 
         stage('Build & Test') {
             steps {
-                echo "⚙️ Building Docker image..."
-                sh 'docker build -t my-app -f Dockerfile-prod .'
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+                    echo "⚙️ Building Docker image..."
+                    sh 'docker build -t my-app -f Dockerfile-prod .'
+                }
             }
         }
 
         stage('SonarCloud Analysis') {
             steps {
-                echo "🔍 Running SonarCloud analysis..."
-                sh """
-                    mvn sonar:sonar \
-                      -Dsonar.organization=${SONAR_ORG} \
-                      -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                      -Dsonar.host.url=${SONAR_HOST_URL} \
-                      -Dsonar.login=${SONAR_LOGIN}
-                """
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+                    echo "🔍 Running SonarCloud analysis..."
+                    sh """
+                        mvn sonar:sonar \
+                          -Dsonar.organization=${SONAR_ORG} \
+                          -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                          -Dsonar.host.url=${SONAR_HOST_URL} \
+                          -Dsonar.login=${SONAR_LOGIN}
+                    """
+                }
             }
         }
 
         stage('Wait for Sonar Quality Gate') {
             steps {
-                echo "🕒 Waiting for Sonar Quality Gate result..."
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+                    echo "🕒 Waiting for Sonar Quality Gate result..."
+                    timeout(time: 5, unit: 'MINUTES') {
+                        waitForQualityGate abortPipeline: true
+                    }
                 }
             }
         }
 
         stage('Build & Push Docker Image') {
             steps {
-                script {
-                    echo "🐳 Building and pushing image to Nexus..."
-                    def imageName = "my-app"
-                    def imageFull = "${REGISTRY_URL}/${imageName}:${IMAGE_TAG}"
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+                    script {
+                        echo "🐳 Building and pushing image to Nexus..."
+                        def imageName = "my-app"
+                        def imageFull = "${REGISTRY_URL}/${imageName}:${IMAGE_TAG}"
 
-                    sh """
-                        echo "${NEXUS_PASS}" | docker login ${REGISTRY_URL} -u "${NEXUS_USER}" --password-stdin
-                        docker build -t ${imageFull} .
-                        docker push ${imageFull}
-                        docker logout ${REGISTRY_URL}
-                    """
-                    env.IMAGE_NAME = imageName
+                        sh """
+                            echo "${NEXUS_PASS}" | docker login ${REGISTRY_URL} -u "${NEXUS_USER}" --password-stdin
+                            docker build -t ${imageFull} .
+                            docker push ${imageFull}
+                            docker logout ${REGISTRY_URL}
+                        """
+                        env.IMAGE_NAME = imageName
+                    }
                 }
             }
         }
 
         stage('Update Deploy Repo') {
             steps {
-                script {
-                    echo "📤 Updating deploy repo with new image tag ${IMAGE_TAG}"
-                    sh """
-                        rm -rf infra-deploy
-                        git clone ${GIT_DEPLOY_REPO} infra-deploy
-                        cd infra-deploy/k8s/my-app
-                        sed -i "s|image: .*|image: ${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}|g" deployment.yaml
-                        git config user.email "jenkins@ci.local"
-                        git config user.name "jenkins"
-                        git commit -am "Update image tag to ${IMAGE_TAG}" || echo "No changes to commit"
-                        git push origin main
-                    """
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+                    script {
+                        echo "📤 Updating deploy repo with new image tag ${IMAGE_TAG}"
+                        sh """
+                            rm -rf infra-deploy
+                            git clone ${GIT_DEPLOY_REPO} infra-deploy
+                            cd infra-deploy/k8s/my-app
+                            sed -i "s|image: .*|image: ${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}|g" deployment.yaml
+                            git config user.email "jenkins@ci.local"
+                            git config user.name "jenkins"
+                            git commit -am "Update image tag to ${IMAGE_TAG}" || echo "No changes to commit"
+                            git push origin main
+                        """
+                    }
                 }
             }
         }
