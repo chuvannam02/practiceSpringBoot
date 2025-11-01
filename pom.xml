@@ -210,6 +210,14 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+   <repository>
+     <id>github</id>
+     <name>GitHub OWNER Apache Maven Packages</name>
+     <url>https://maven.pkg.github.com/chuvannam02/practiceSpringBoot</url>
+   </repository>
+</distributionManageme
+
     <build>
         <plugins>
             <plugin>
