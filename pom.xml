@@ -219,7 +219,6 @@
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
-                            <version>1.18.22</version>
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
