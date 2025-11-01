@@ -18,7 +18,7 @@ pipeline {
     }
 
     options {
-        timestamps()          // ⏰ hiển thị thời gian mỗi log line
+        timestamps()
         buildDiscarder(logRotator(numToKeepStr: '10'))
         timeout(time: 30, unit: 'MINUTES')
     }
@@ -127,25 +127,14 @@ pipeline {
                 }
             }
         }
-    }
 
-    post {
-        always {
-            script {
-                def end = System.currentTimeMillis()
-                def duration = (end - env.PIPELINE_START.toLong()) / 1000
-                echo "⏱️ Pipeline finished in ${duration} seconds"
+        stage('Notify Slack') {
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+                    echo "📢 Sending Slack notification..."
+                    slackSend channel: "${SLACK_CHANNEL}", message: "✅ *Build #${BUILD_NUMBER}* succeeded. Image tag: ${IMAGE_TAG}"
+                }
             }
-        }
-
-        success {
-            echo "✅ Build succeeded! Image: ${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
-            slackSend channel: "${SLACK_CHANNEL}", message: "✅ *Build #${BUILD_NUMBER}* succeeded in ${currentBuild.durationString}. Image tag: ${IMAGE_TAG}"
-        }
-
-        failure {
-            echo "❌ Build failed at stage: ${env.STAGE_NAME}"
-            slackSend channel: "${SLACK_CHANNEL}", message: "❌ *Build #${BUILD_NUMBER}* failed at stage: ${env.STAGE_NAME}"
         }
     }
 }
