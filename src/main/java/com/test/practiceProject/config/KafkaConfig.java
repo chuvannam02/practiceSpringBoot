@@ -36,6 +36,6 @@ public class KafkaConfig {
         return TopicBuilder.name("test-topic")
             .partitions(2)
             .replicas(1)
-            .build()
+            .build();
     }
 }
