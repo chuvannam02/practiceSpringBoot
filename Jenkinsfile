@@ -66,16 +66,15 @@ pipeline {
             steps {
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
                     echo "🔍 Running SonarCloud analysis..."
-                  withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-    sh """
-        mvn sonar:sonar \
-          -Dsonar.organization=${SONAR_ORG} \
-          -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-          -Dsonar.host.url=${SONAR_HOST_URL} \
-          -Dsonar.login=$SONAR_TOKEN
-    """
-}
-
+                      withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                        sh """
+                            mvn sonar:sonar \
+                              -Dsonar.organization=${SONAR_ORG} \
+                              -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                              -Dsonar.host.url=${SONAR_HOST_URL} \
+                              -Dsonar.login=${SONAR_TOKEN}
+                        """
+                    }
                 }
             }
         }
