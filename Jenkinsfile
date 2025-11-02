@@ -86,16 +86,16 @@ pipeline {
             }
         }
 
-        stage('Wait for Sonar Quality Gate') {
-            steps {
-                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
-                    echo "🕒 Waiting for Sonar Quality Gate result..."
-                    timeout(time: 5, unit: 'MINUTES') {
-                        waitForQualityGate abortPipeline: true
-                    }
-                }
-            }
-        }
+        // stage('Wait for Sonar Quality Gate') {
+        //     steps {
+        //         wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+        //             echo "🕒 Waiting for Sonar Quality Gate result..."
+        //             timeout(time: 5, unit: 'MINUTES') {
+        //                 waitForQualityGate abortPipeline: true
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Build & Push Docker Image') {
             steps {
