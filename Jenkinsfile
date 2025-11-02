@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY_URL = 'http://localhost:9000'
+        REGISTRY_URL = 'http://nexus:5000'
         GIT_DEPLOY_REPO = 'https://github.com/chuvannam02/CI-CD.git'
         GIT_SOURCE_APP = 'https://github.com/chuvannam02/practiceSpringBoot.git'
 
