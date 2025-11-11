@@ -8,12 +8,14 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 
 @Entity
+@EqualsAndHashCode(callSuper = false)
 @Table(name="user")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor

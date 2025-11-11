@@ -32,7 +32,7 @@ public class JwtTokenProvider {
     private final long JWT_EXPIRATION = 604800000L;
 
     public static String extractUsername(String token) {
-        return Jwts.parserBuilder()
+        return Jwts.parser()
             .setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64.decode(JWT_SECRET)))
             .build()
             .parseClaimsJws(token)
@@ -51,7 +51,7 @@ public class JwtTokenProvider {
 
     private Claims extractAllClaims(String token) {
         return Jwts
-            .parserBuilder()
+            .parser()
             .setSigningKey(getSignKey())
             .build()
             .parseClaimsJws(token)

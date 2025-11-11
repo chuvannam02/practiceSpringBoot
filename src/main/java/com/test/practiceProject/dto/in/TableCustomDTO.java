@@ -2,6 +2,7 @@ package com.test.practiceProject.dto.in;
 
 import com.test.practiceProject.entity.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @Project: practiceProject
@@ -12,6 +13,7 @@ import lombok.Data;
  */
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class TableCustomDTO extends BaseEntity {
     private String name;
     private String description;

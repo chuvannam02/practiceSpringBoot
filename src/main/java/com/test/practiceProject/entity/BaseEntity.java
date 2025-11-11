@@ -22,7 +22,7 @@ import java.time.Instant;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Schema(description = "Thông tin metadata cơ bản chung cho tất cả entity")
-public class BaseEntity implements Serializable {
+public abstract class BaseEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -56,4 +56,41 @@ public class BaseEntity implements Serializable {
 //    @JsonFormat(pattern = "dd-MM-yyyy hh")
     private Instant  lastModifiedDate;
 
+//    dùng @Data (tự sinh equals()/hashCode()).
+
+//    Chi tiết:
+
+//    abstract class BaseEntity chứa các trường metadata (createdBy, createdDate, …).
+
+//    Class con (Category, UserEntity, …) dùng @Data → Lombok sinh equals/hashCode cho các field trong class con.
+
+//    Lombok cảnh báo "không gọi super.equals()", vì class con kế thừa từ BaseEntity, mà Lombok không biết bạn có muốn so sánh các trường của BaseEntity hay không.
+
+//    Giải pháp khi dùng abstract BaseEntity:
+
+//    Không tính field của BaseEntity trong equals/hashCode (thường là metadata không quan trọng để so sánh entity):
+
+//    @Data
+//    @EqualsAndHashCode(callSuper = false)
+//    @Entity
+//    public class Category extends BaseEntity {
+        // ...
+//    }
+
+
+//    Nếu muốn tính cả field của BaseEntity:
+
+//    @Data
+//    @EqualsAndHashCode(callSuper = true)
+//    @Entity
+//    public class Category extends BaseEntity {
+        // ...
+//    }
+
+
+//💡 Tip:
+
+//    Với entity JPA, thường bạn chỉ muốn equals/hashCode dựa vào id, hoặc các field business chính.
+
+//    Metadata như createdBy/createdDate không nên đưa vào equals/hashCode, nên callSuper = false là hợp lý.
 }

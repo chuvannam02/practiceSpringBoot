@@ -37,7 +37,7 @@ public class AddonsJwtAuthenticationConverter implements Converter<String, JwtAu
     public JwtAuth convert(String token) {
         try {
             Key key = getSignKey();
-            Jws<Claims> jwsClaims = Jwts.parserBuilder()
+            Jws<Claims> jwsClaims = Jwts.parser()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);

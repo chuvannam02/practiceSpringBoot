@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.List;
 @Entity(name = "category")
 @Table(name = "category")
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class Category extends BaseEntity {

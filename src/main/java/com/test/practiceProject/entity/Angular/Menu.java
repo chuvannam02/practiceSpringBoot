@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -23,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "menu")
 @Data
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Menu extends BaseEntity implements Comparable<Menu>{

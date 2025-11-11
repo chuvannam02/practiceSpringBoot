@@ -1,0 +1,30 @@
+# ---------- [1] Stage build ----------
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
+
+# Giữ maven cache riêng để giảm build time khi rebuild
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy source và build
+COPY src ./src
+RUN mvn clean package -DskipTests -Dmaven.test.skip=true
+
+# ---------- [2] Stage runtime ----------
+FROM gcr.io/distroless/java17-debian12:nonroot
+
+# Giảm bớt metadata để tránh leak thông tin
+LABEL org.opencontainers.image.source="https://your-repo-url"
+LABEL org.opencontainers.image.authors="Your Name <you@example.com>"
+LABEL org.opencontainers.image.title="Practice Project"
+LABEL org.opencontainers.image.description="Optimized Spring Boot Docker image"
+
+# Distroless không có shell, đảm bảo app chỉ chạy được qua entrypoint
+WORKDIR /app
+COPY --from=builder /app/target/practiceProject-0.0.1-SNAPSHOT.jar app.jar
+
+# Không cần expose khi deploy Kubernetes, nhưng vẫn ok cho local
+EXPOSE 8081
+
+# JVM tuning: giảm RAM footprint
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-Duser.timezone=GMT+7", "-Dspring.profiles.active=prod", "-jar", "app.jar"]

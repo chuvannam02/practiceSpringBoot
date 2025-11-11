@@ -5,6 +5,7 @@ import com.test.practiceProject.utils.validation.MaxLengthWithField;
 import com.test.practiceProject.utils.validation.groups.Create;
 import com.test.practiceProject.utils.validation.payloads.Severity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -16,6 +17,7 @@ import lombok.experimental.SuperBuilder;
  */
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 public class MenuDTO extends SortDTO {
     private Integer id;
