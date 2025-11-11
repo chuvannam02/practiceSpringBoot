@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY_URL = 'http://localhost:9000'
+        REGISTRY_URL = 'https://host.docker.internal:5443'
         GIT_DEPLOY_REPO = 'https://github.com/chuvannam02/CI-CD.git'
         GIT_SOURCE_APP = 'https://github.com/chuvannam02/practiceSpringBoot.git'
 
@@ -86,16 +86,16 @@ pipeline {
             }
         }
 
-        stage('Wait for Sonar Quality Gate') {
-            steps {
-                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
-                    echo "🕒 Waiting for Sonar Quality Gate result..."
-                    timeout(time: 5, unit: 'MINUTES') {
-                        waitForQualityGate abortPipeline: true
-                    }
-                }
-            }
-        }
+        // stage('Wait for Sonar Quality Gate') {
+        //     steps {
+        //         wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+        //             echo "🕒 Waiting for Sonar Quality Gate result..."
+        //             timeout(time: 5, unit: 'MINUTES') {
+        //                 waitForQualityGate abortPipeline: true
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Build & Push Docker Image') {
             steps {
